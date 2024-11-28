@@ -20,7 +20,7 @@
             font-size: 48;
             font-family: 'Monospace', 'Courier New', Courier; 
             border-radius: 10px; 
-            width: 70vw;
+            width: 80vw;
             justify-content: space-between; 
             margin-bottom: 20px; 
             overflow: hidden; 
@@ -100,35 +100,111 @@
 
 	<h1 id="page-title">Penetration Test Commands</h1>
 
-	<!-- Command 1 -->
+	<!-- Command 1.0 -->
 	<br>
-	<div class="bold-text">1. Port scanning</div>
-    <div class="normal-text">Utilizzare il tool nmap per individuare i servizi TCP e UDP esposti</div>
+	<div class="bold-text">1.0 Port scanning</div>
+    <div class="normal-text">Utilizzare il tool nmap per individuare le porte TCP e UDP aperte</div>
     <div class="container">
         <div class="sample" id="sample1">nmap -p- -sU -sT [target_IP] </div>
         <button onclick="CopyCommand('sample1')">Copy</button>
-    </div>
-
-    <!-- Command 2 -->
+	</div>
+	
+	<div class="normal-text">
 	<br>
-	<div class="bold-text">Titolo 2</div>
-    <div class="normal-text">Testo separatore 2</div>
+        In base alle porte aperte rilevate effettuare i seguenti test:
+            <ol type="1">
+                <li>1.1 : Porta 21 FTP - anonymous login  </li>
+                <li>1.2 : Porta 22 SSH - brute force attack  </li>
+                <li>1.3 : Porta 80 HTTP - web spidering </li>
+                <li>1.4 : Porta 80 HTTP - sql injection </li>
+				<li>1.5 : Porta 135 RPC - service enumeration </li>
+                <li>1.6 : Porta 445 SMB - anonymous login </li>
+				<li>1.7 : Porta 445 SMB - brute force attack </li>
+				<li>1.8 : Porta 3389 RDP - brute force attack </li>
+            </ol>
+    </div>
+	
+    <!-- Command 1.1 -->
+	<br>
+	<div class="bold-text">1.1 FTP - anonymous login</div>
+    <div class="normal-text">Testare la possibilità di effettuare un accesso anonimo in FTP col seguente comando. Inserire name:anonymous e premere invio quando sarà richiesta la password.</div>
     <div class="container">
-        <div class="sample" id="sample2">command 2 - Secondo comando di esempio</div>
+        <div class="sample" id="sample2">ftp [target_IP]</div>
         <button onclick="CopyCommand('sample2')">Copy</button>
     </div>
+	<div class="normal-text">In caso di successo testare i vari comandi FTP: ls, dir, get, put, binary, passive</div>
 
-    <!-- Command 3 -->
+    <!-- Command 1.2 -->
 	<br>
-	<div class="bold-text">Titolo 3</div>
-    <div class="normal-text">Testo separatore 3</div>
+	<div class="bold-text">1.2 SSH - brute force attack</div>
+    <div class="normal-text">Creare inizialmente un file password_list.txt. Testare la possibilità di indovinare una password debole mediante un attacco a forza bruta col tool hydra</div>
     <div class="container">
-        <div class="sample" id="sample3">command 3 - Terzo comando di esempio</div>
+        <div class="sample" id="sample3">hydra -l [username] -P password_list.txt ssh://[target_IP]</div>
         <button onclick="CopyCommand('sample3')">Copy</button>
     </div>
+	<div class="normal-text">Nota: come file di input delle password è possibile usare /usr/share/wordlists/rockyou.txt</div>
+
+    <!-- Command 1.3 -->
+	<br>
+	<div class="bold-text">1.3 HTTP - web spidering</div>
+    <div class="normal-text">Mediante il tool dirb verificare l'esistenza di eventuali contenuti web nascosti</div>
+    <div class="container">
+        <div class="sample" id="sample4">dirb [target_URL]</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+	
+	<!-- Command 1.4 -->
+	<br>
+	<div class="bold-text">1.4 HTTP - sql injection</div>
+    <div class="normal-text">Intercettare inizialmente la richiesta http di login e salvarla sul file request.txt. Successivamente utilizzare sqlmap per testare le injection</div>
+    <div class="container">
+        <div class="sample" id="sample5">sqlmap -r request.txt --batch --dbs --level=5 --risk=3</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+	
+	<!-- Command 1.5 -->
+	<br>
+	<div class="bold-text">1.5 RPC - service enumeration</div>
+    <div class="normal-text">Utilizzare il tool rpcclient per ottenere informazioni sull'host tramite il protocollo rpc </div>
+    <div class="container">
+        <div class="sample" id="sample6">rpcclient -U "" [target_IP]</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+	<div class="normal-text">In caso di successo testare i comandi enumdomusers e lsaquery per ottenere informazioni sul dominio</div>
+	
+	<!-- Command 1.6 -->
+	<br>
+	<div class="bold-text">1.6 SMB - anonymous login</div>
+    <div class="normal-text">Utilizzare il tool enum4linux per testare la possibilità di effettuare un accesso anonimo in SMB</div>
+    <div class="container">
+        <div class="sample" id="sample7">enum4linux -a [target_IP]</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+	
+	<!-- Command 1.7 -->
+	<br>
+	<div class="bold-text">1.7 SMB - brute force attack</div>
+    <div class="normal-text">Creare inizialmente un file password_list.txt. Testare la possibilità di indovinare una password debole mediante un attacco a forza bruta col tool hydra</div>
+    <div class="container">
+        <div class="sample" id="sample8">hydra -l [username] -P password_list.txt smb://[Target_IP]</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+	<div class="normal-text">Nota: come file di input delle password è possibile usare /usr/share/wordlists/rockyou.txt</div>
+	
+	
+	<!-- Last Command  -->
+	<br>
+	<div class="bold-text">Metasploit</div>
+    <div class="normal-text">In caso di vulnerabilità note rilevate in fase di vulnerability scan è possibile testare i relativi esploit mediante Metasploit</div>
+    <div class="container">
+        <div class="sample" id="sampleZ">msfconsole </div>
+        <button onclick="CopyCommand('sampleZ')">Copy</button>
+	</div>
 
 
-    <script>
+
+	
+	<script>
 		function CopyCommand(sampleId) {
 			const textToCopy = document.getElementById(sampleId).innerText;
 			navigator.clipboard.writeText(textToCopy).then(function () {			
