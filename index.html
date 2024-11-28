@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Test Commands</title>
+    <style>
+        body {
+            margin: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            background-color: black; 
+            color: white; 
+            padding: 20px;
+            font-size: 48;
+            font-family: 'Monospace', 'Courier New', Courier; 
+            border-radius: 10px; 
+            width: 70vw;
+            justify-content: space-between; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+            white-space: nowrap; 
+        }
+
+        .sample {
+            flex: 1;
+            overflow: hidden; 
+            text-overflow: ellipsis;
+        }
+
+        button {
+            width: 80px;
+            height: 40px;
+            background-color: red; 
+            color: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease; 
+        }
+
+        button:hover {
+            background-color: darkred; 
+        }
+
+        #message {
+            margin-top: 20px;
+            color: green;
+            font-size: large;
+            visibility: hidden;
+        }
+		
+        .normal-text {
+            text-align: left;
+            font-size: 48;
+			font-family:Consolas;
+            margin: 20px 0;
+            color: black; 
+        }
+		
+		.bold-text {
+			text-align: left;
+			font-size: 64;
+			font-family:Consolas;
+			margin: 20px 0;
+			color: black;
+			font-weight: bold; 
+		}
+		
+		#page-title {
+			font-size: 3em; 
+			text-align: center; 
+			color: white;
+			background-color: black; 
+			padding: 20px; 
+			margin: 0; 
+			border-radius: 10px;
+			font-family: 'Consolas';
+			text-transform: uppercase; 
+			letter-spacing: 2px;
+			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+			position: absolute; 
+			width: 100%; 
+			top: 0; 
+			left: 0;
+		}
+
+
+    </style>
+</head>
+
+<body>
+
+	<h1 id="page-title">Penetration Test Commands</h1>
+
+	<!-- Command 1 -->
+	<br>
+	<div class="bold-text">1. Port scanning</div>
+    <div class="normal-text">Utilizzare il tool nmap per individuare i servizi TCP e UDP esposti</div>
+    <div class="container">
+        <div class="sample" id="sample1">nmap -p- -sU -sT [target_IP] </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+    <!-- Command 2 -->
+	<br>
+	<div class="bold-text">Titolo 2</div>
+    <div class="normal-text">Testo separatore 2</div>
+    <div class="container">
+        <div class="sample" id="sample2">command 2 - Secondo comando di esempio</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+    <!-- Command 3 -->
+	<br>
+	<div class="bold-text">Titolo 3</div>
+    <div class="normal-text">Testo separatore 3</div>
+    <div class="container">
+        <div class="sample" id="sample3">command 3 - Terzo comando di esempio</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+
+    <script>
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>
