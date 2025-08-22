@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDP - brute force attack</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+<!-- RDP - brute force attack -->
+	<br>
+	<div class="bold-text">RDP - brute force attack</div>
+    <div class="normal-text">Creare inizialmente un file password_list.txt. Testare la possibilità di indovinare una password debole mediante un attacco a forza bruta col tool medusa</div>
+    <div class="container">
+        <div class="sample" id="sample9">medusa -h [target_IP] -u [username] -P password_list.txt -M rdp</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+	<div class="normal-text">Nota: come file di input delle password è possibile usare /usr/share/wordlists/rockyou.txt</div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>

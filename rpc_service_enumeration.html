@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPC - service enumeration</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+<!-- RPC - service enumeration -->
+	<br>
+	<div class="bold-text">RPC - service enumeration</div>
+    <div class="normal-text">Utilizzare il tool rpcclient per ottenere informazioni sull'host tramite il protocollo rpc </div>
+    <div class="container">
+        <div class="sample" id="sample6">rpcclient -U "" [target_IP]</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+	<div class="normal-text">In caso di successo testare i comandi enumdomusers e lsaquery per ottenere informazioni sul dominio</div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>

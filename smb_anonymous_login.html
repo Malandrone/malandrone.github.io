@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMB - anonymous login</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+<!-- SMB - anonymous login -->
+	<br>
+	<div class="bold-text">SMB - anonymous login</div>
+    <div class="normal-text">Utilizzare il tool enum4linux per testare la possibilità di effettuare un accesso anonimo in SMB</div>
+    <div class="container">
+        <div class="sample" id="sample7">enum4linux -a [target_IP]</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>

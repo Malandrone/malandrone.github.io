@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDP - brute force attack</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+<!-- Metasploit Command 1 -->
+	<br>
+	<div class="bold-text" id="sampleM0">Metasploit</div>
+    <div class="normal-text">In caso di vulnerabilità aventi exploit conosciuti rilevate in fase di vulnerability scan effettuare i test di sfruttamento mediante Metasploit.</div>
+	<br>
+	<div class="normal-text">Inizializzare il database</div>
+    <div class="container">
+        <div class="sample" id="sampleM1">msfdb init </div>
+        <button onclick="CopyCommand('sampleM1')">Copy</button>
+	</div>
+	
+	<!-- Metasploit Command 2 -->
+	<br>
+	<div class="normal-text">Avviare Metasploit</div>
+    <div class="container">
+        <div class="sample" id="sampleM2">msfconsole </div>
+        <button onclick="CopyCommand('sampleM2')">Copy</button>
+	</div>
+	
+	<!-- Metasploit Command 3 -->
+	<br>
+	<div class="normal-text">Ricercare l'exploit da testare</div>
+    <div class="container">
+        <div class="sample" id="sampleM3">search [exploit_name] </div>
+        <button onclick="CopyCommand('sampleM3')">Copy</button>
+	</div>
+	
+	<!-- Metasploit Command 4 -->
+	<br>
+	<div class="normal-text">Inizializzare l'exploit</div>
+    <div class="container">
+        <div class="sample" id="sampleM4">use [path/to/exploit] </div>
+        <button onclick="CopyCommand('sampleM4')">Copy</button>
+	</div>
+	
+	<!-- Metasploit Command 5 -->
+	<br>
+	<div class="normal-text">Visualizzare i parametri configurabili</div>
+    <div class="container">
+        <div class="sample" id="sampleM5">show options </div>
+        <button onclick="CopyCommand('sampleM5')">Copy</button>
+	</div>
+	
+	<!-- Metasploit Command 6 -->
+	<br>
+	<div class="normal-text">Impostare i parametri</div>
+    <div class="container">
+        <div class="sample" id="sampleM6">set [parameter_name] [parameter_value] </div>
+        <button onclick="CopyCommand('sampleM6')">Copy</button>
+	</div>
+	
+	<!-- Metasploit Command 7 -->
+	<br>
+	<div class="normal-text">Avviare l'exploit</div>
+    <div class="container">
+        <div class="sample" id="sampleM7">run </div>
+        <button onclick="CopyCommand('sampleM7')">Copy</button>
+	</div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>

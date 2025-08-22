@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port scanning</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+
+	<!-- Port scanning -->
+	<br>
+	<div class="bold-text">Port scanning</div>
+    <div class="normal-text">Utilizzare il tool nmap per individuare le porte TCP e UDP aperte</div>
+    <div class="container">
+        <div class="sample" id="sample1">nmap -p- -sU -sT [target_IP] </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<div class="normal-text">
+		<br>
+        Parametri:
+				<li>-sS → TCP SYN scan (scansione stealth)</li>
+				<li>-sT → TCP connect scan (completa connessione)</li>
+				<li>-sU → UDP scan</li>
+				<li>-sA → scan degli ACK per firewall detection</li>
+				<li>-sV → rileva le versioni dei servizi</li>
+				<li>-O  → rileva il sistema operativo</li>
+				<li>-Pn → disabilita il ping, assume che gli host siano attivi</li>
+		<br>
+		In base alle porte aperte rilevate effettuare i seguenti test:
+        
+                <li><a href=ftp_anonymous_login.html>Porta 21 :  FTP - anonymous login</a></li>
+                <li><a href=ssh_brute_force_attack.html>Porta 22 :  SSH - brute force attack</a></li>
+                <li><a href=http_web_spidering.html>Porta 80/443 :  HTTP/HTTPS - web spidering</a></li>
+                <li><a href=http_https__sql_injection.html>Porta 80/443 :  HTTP/HTTPS - sql injection</a></li>
+				<li><a href=rpc_service_enumeration.html>Porta 135 :  RPC - service enumeration</a></li>
+                <li><a href=smb_anonymous_login.html>Porta 445 :  SMB - anonymous login</a></li>
+				<li><a href=smb_brute_force_attack.html>Porta 445 :  SMB - brute force attack</a></li>
+				<li><a href=rdp_brute_force_attack.html>Porta 3389 :  RDP - brute force attack</a></li>
+       
+		<br>
+		Se in fase di vulnerability scan sono state rilevate vulnerabilità per cui è pubblicamente disponibile un exploit eseguire i test di sfruttamento con <a href=metasploit.html>Metasploit</a>
+	</div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>

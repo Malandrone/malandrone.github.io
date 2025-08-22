@@ -1,0 +1,89 @@
+body {
+            background-image: url('background.jpg');
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: center;
+			margin: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            background-color: black; 
+            color: white; 
+            padding: 20px;
+            font-size: 48;
+            font-family: 'Monospace', 'Courier New', Courier; 
+            border-radius: 10px; 
+            width: 80vw;
+            justify-content: space-between; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+            white-space: nowrap; 
+        }
+
+        .sample {
+            flex: 1;
+            overflow: hidden; 
+            text-overflow: ellipsis;
+        }
+
+        button {
+            width: 80px;
+            height: 40px;
+            background-color: red; 
+            color: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease; 
+        }
+
+        button:hover {
+            background-color: darkred; 
+        }
+
+        #message {
+            margin-top: 20px;
+            color: green;
+            font-size: large;
+            visibility: hidden;
+        }
+		
+        .normal-text {
+            text-align: left;
+            font-size: 48;
+			font-family:Consolas;
+            margin: 20px 0;
+            color: black; 
+        }
+		
+		.bold-text {
+			text-align: left;
+			font-size: 64;
+			font-family:Consolas;
+			margin: 20px 0;
+			color: black;
+			font-weight: bold; 
+		}
+		
+		#page-title {
+			font-size: 3em; 
+			text-align: center; 
+			color: white;
+			background-color: black; 
+			padding: 20px; 
+			margin: 0; 
+			border-radius: 10px;
+			font-family: 'Consolas';
+			text-transform: uppercase; 
+			letter-spacing: 2px;
+			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+			position: absolute; 
+			width: 100%; 
+			top: 0; 
+			left: 0;
+		}

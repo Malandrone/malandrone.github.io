@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP/HTTPS - web spidering</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+
+        <!-- HTTP - web spidering -->
+	<br>
+	<div class="bold-text">HTTP - web spidering</div>
+    <div class="normal-text">Mediante il tool dirb verificare l'esistenza di eventuali contenuti web nascosti</div>
+    <div class="container">
+        <div class="sample" id="sample4">dirb [target_URL]</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>

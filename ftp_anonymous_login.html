@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTP - anonymous login</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Penetration Test Commands</h1>
+
+    <!-- FTP - anonymous login -->
+	<br>
+	<div class="bold-text">FTP - anonymous login</div>
+    <div class="normal-text">Testare la possibilità di effettuare un accesso anonimo in FTP col seguente comando. Inserire name:anonymous e premere invio quando sarà richiesta la password.</div>
+    <div class="container">
+        <div class="sample" id="sample2">ftp [target_IP]</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+	<div class="normal-text">In caso di successo testare i seguenti comandi FTP:
+	<li>ls → lista file e cartelle nel server</li>
+	<li>cd [cartella] → cambia directory</li>
+	<li>get [file] → scarica un file dal server</li>
+	<li>put [file] → carica un file sul server</li>
+	<li>binary → imposta trasferimento file in modalità binaria (per file non di testo)</li>
+	<li>passive → abilita modalità passiva</li>
+	<li>quit → chiude la connessione</li>
+	<br>
+	Se put consente l'upload su path esposti su pagine web, testare l'upload di una webshell php
+	</div>
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>
