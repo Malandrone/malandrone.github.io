@@ -11,7 +11,7 @@
 
 	<!-- Visualizzare container in esecuzione -->
 	<br>
-	<div class="bold-text">Visualizzare i container in esecuzione</div>
+	<div class="normal-text">Visualizzare i container in esecuzione</div>
     <div class="container">
         <div class="sample" id="sample1">docker container ls </div>
         <button onclick="CopyCommand('sample1')">Copy</button>
@@ -19,13 +19,164 @@
 
 	<!-- Visualizzare tutti i container creati -->
 	<br>
-	<div class="bold-text">Visualizzare tutti i container creati </div>
+	<div class="normal-text">Visualizzare tutti i container creati </div>
     <div class="container">
         <div class="sample" id="sample1">docker ps -a </div>
         <button onclick="CopyCommand('sample1')">Copy</button>
 	</div>
 	
+	<!-- Visualizzare le immagini importate -->
+	<br>
+	<div class="normal-text">Visualizzare le immagini importate </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker image ls </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Importare un'immagine da un file tar -->
+	<br>
+	<div class="normal-text">Importare un'immagine da un file tar </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker load file.tar </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Creare un container da un'immagine - porte esposte -->
+	<br>
+	<div class="normal-text">Creare un container da un'immagine - porte esposte </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker run -dit --network bridge --name nome_applicativo -p porta_esterna:porta_interna id_immagine </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Creare un container da un'immagine - IP arbitrario -->
+	<br>
+	<div class="normal-text">Creare un container da un'immagine - IP arbitrario </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker run -dit --network nome_subnet --ip 172.16.0.1 --name nome_applicativo -p porta_esterna:porta_interna id_immagine </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+
+	<!-- Creare un container da un'immagine - persistenza/condivisione mount -->
+	<br>
+	<div class="normal-text">Creare un container da un'immagine - persistenza/condivisione mount </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker run -d --name nome_container --restart unless-stopped --privileged -v /mnt/folder:/mnt/folder nome_immagine /sbin/init </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Accedere ad un container - bash -->
+	<br>
+	<div class="normal-text">Accedere ad un container - bash </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker exec -u 0 -it id_container bash </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Accedere ad un container - /bin/sh -->
+	<br>
+	<div class="normal-text">Accedere ad un container - /bin/sh </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker exec -u 0 -it id_container /bin/sh </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Fermare un container -->
+	<br>
+	<div class="normal-text">Fermare un container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker container stop nome_container </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+
+	<!-- Eliminare un container -->
+	<br>
+	<div class="normal-text">Eliminare un container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker container rm nome_container </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+
+	<!-- Eliminare un'immagine -->
+	<br>
+	<div class="normal-text">Eliminare un'immagine </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker image rm nome_immagine </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
 		
+	<!-- Vedere l'IP di un container -->
+	<br>
+	<div class="normal-text">Vedere l'IP di un container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nome_container </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>		
+		
+	<!-- Copiare un file da container su host -->
+	<br>
+	<div class="normal-text">Copiare un file da container su host </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker cp container_id:/file/path/nel/container /host/path/destinazione </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+		
+	<!-- Copiare un file da host verso il container -->
+	<br>
+	<div class="normal-text">Copiare un file da host verso il container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker cp file.ext  container_id:/percorso/destinazione </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+		
+	<!-- Rinominare un container -->
+	<br>
+	<div class="normal-text">Rinominare un container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker rename vecchio_nome nuovo_nome </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Creare una subnet -->
+	<br>
+	<div class="normal-text">Creare una subnet </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker network create --subnet=172.16.0.0/24 nome_subnet </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Vedere i log di un container -->
+	<br>
+	<div class="normal-text">Vedere i log di un container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker logs nome_container </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+	<!-- Creare un'immagine da un container -->
+	<br>
+	<div class="normal-text">Creare un'immagine da un container </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker commit nome_container nome_immagine:nome_tag </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>	
+
+	<!-- Esportare un'immagine su un file compresso -->
+	<br>
+	<div class="normal-text">Esportare un'immagine su un file compresso </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker save nome_image | gzip > /cartella/destinazione/nome_applicazione.tar.gz </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>	
+	
+	<!-- Importare un'immagine da un file compresso -->
+	<br>
+	<div class="normal-text">Importare un'immagine da un file compresso </div>
+    <div class="container">
+        <div class="sample" id="sample1">gunzip -c my_app.tar.gz | docker load </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>	
+	
 	<script>	
 		function CopyCommand(sampleId) {
 			const textToCopy = document.getElementById(sampleId).innerText;
