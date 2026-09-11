@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker commands</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 id="page-title">Docker Commands</h1>
+
+	<!-- Visualizzare container in esecuzione -->
+	<br>
+	<div class="bold-text">Visualizzare i container in esecuzione</div>
+    <div class="container">
+        <div class="sample" id="sample1">docker container ls </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+
+	<!-- Visualizzare tutti i container creati -->
+	<br>
+	<div class="bold-text">Visualizzare tutti i container creati </div>
+    <div class="container">
+        <div class="sample" id="sample1">docker ps -a </div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+	</div>
+	
+		
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+
+</html>
