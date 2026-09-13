@@ -1,0 +1,115 @@
+<!DOCTYPE html> 
+
+<html lang="it"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Excel formulas</title> 
+	<link rel="stylesheet" href="styles.css"> 
+</head> 
+<body> 
+	<h1 id="page-title">Excel formulas</h1> 
+
+<!-- Restituisci un valore in base ad una condizione --> 
+<br> 
+<div class="bold-text">Restituisci un valore in base ad una condizione</div> 
+<div class="container"> 
+    <div class="sample" id="sample1">=SE(B2&lt;C3;1; 0)</div> 
+    <button onclick="CopyCommand('sample1')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  B2&lt;C3: valori da confrontare<br> 
+  1: valore restituito in caso positivo<br> 
+  2: valore restituito in caso negativo 
+</div>
+
+<!-- Contare i valori di una colonna uguali ad una dato valore --> 
+<br> 
+<div class="bold-text">Contare i valori di una colonna uguali ad una dato valore</div> 
+<div class="container"> 
+    <div class="sample" id="sample2">=CONTA.SE(I$10:I$20;A2)</div> 
+    <button onclick="CopyCommand('sample2')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  I$10:I$20: range in cui contare ($ permette al valore di rimanere costante se replicato)<br> 
+  A2: valore di confronto<br> 
+  Nella cella sarà restituito il risultato del conteggio
+</div>
+
+<!-- Cercare il valore di una cella nella stessa riga di un valore noto --> 
+<br> 
+<div class="bold-text">Cercare il valore di una cella nella stessa riga di un valore noto</div> 
+<div class="container"> 
+    <div class="sample" id="sample3">=CERCA.VERT(A1;foglio2!A1:C5;2;FALSO)</div> 
+    <button onclick="CopyCommand('sample3')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  A1: valore di riferimento<br> 
+  foglio2!A1:C5: range di ricerca (matrice)<br> 
+  2: indice di colonna da cui restituire il valore<br> 
+  FALSO: valore restituito in caso negativo
+</div>
+
+<!-- Verificare se una cella contiene una sottostringa --> 
+<br> 
+<div class="bold-text">Verificare se una cella contiene una sottostringa</div> 
+<div class="container"> 
+    <div class="sample" id="sample4">=VAL.NUMERO(RICERCA(B2;A2))</div> 
+    <button onclick="CopyCommand('sample4')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  B2: cella contenente la sottostringa cercata<br> 
+  A2: cella in cui cercare<br> 
+  Restituisce VERO in caso positivo, FALSO altrimenti
+</div>
+
+<!-- Condizioni multiple --> 
+<br> 
+<div class="bold-text">Condizioni multiple</div> 
+<div class="container"> 
+    <div class="sample" id="sample5">=CONTA.PIÙ.SE(G:G; A2; H:H;A18)</div> 
+    <button onclick="CopyCommand('sample5')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  G:G: intervallo in cui si contano le celle uguali a A2<br> 
+  H:H: intervallo in cui si contano le celle uguali a A18<br> 
+  Il risultato finale è il numero di elementi in cui si verificano entrambe queste condizioni
+</div>
+
+<!-- Somma pesata --> 
+<br> 
+<div class="bold-text">Somma pesata</div> 
+<div class="container"> 
+    <div class="sample" id="sample6">=SOMMA.SE(E2:E34; "stored"; B2:B34)</div> 
+    <button onclick="CopyCommand('sample6')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  E2:E34: intervallo di celle che devono soddisfare la condizione (valore = "stored")<br> 
+  B2:B34: intervallo di celle da sommare
+</div>
+
+<!-- Riportare un sottoinsieme di una tabella su un altro foglio in base a una condizione --> 
+<br> 
+<div class="bold-text">Riportare un sottoinsieme di una tabella su un altro foglio in base a una condizione</div> 
+<div class="container"> 
+    <div class="sample" id="sample7">=FILTRO(Nome_Foglio!A:Z; Nome_foglio!V:V ="valore")</div> 
+    <button onclick="CopyCommand('sample7')">Copy</button> 
+</div> 
+<div class="normal-text"> 
+  Nome_Foglio!A:Z: Matrice in cui sono presenti le celle da riportare<br> 
+  Nome_foglio!V:V: Colonna che impone la condizione<br> 
+  valore: Condizione che deve essere soddisfatta
+</div>
+ 
+<script>	 
+	function CopyCommand(sampleId) { 
+		const textToCopy = document.getElementById(sampleId).innerText; 
+		navigator.clipboard.writeText(textToCopy).then(function () {			 
+		}).catch(function (err) { 
+		}); 
+	} 
+</script> 
+
+</body> 
+
+</html>
