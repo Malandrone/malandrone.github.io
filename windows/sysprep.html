@@ -1,0 +1,126 @@
+<!DOCTYPE html> 
+
+<html lang="it"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+<body> 
+	<h1 id="page-title">Windows Server 2019 - Configurare una nuova macchina Windows con sysprep</h1> 
+<br>
+<br> 
+<!-- Cambiare SID --> 
+<br> 
+<div class="bold-text">Cambiare SID</div> 
+
+<div class="normal-text">
+	Per cambiare il SID di una macchina Windows Server usando Sysprep, eseguire il seguente comando da un prompt dei comandi con privilegi amministrativi:
+</div>
+
+<div class="container"> 
+    <div class="sample" id="sample1">C:\Windows\System32\Sysprep\sysprep.exe /generalize /oobe /shutdown</div> 
+    <button onclick="CopyCommand('sample1')">Copy</button> 
+</div> 
+
+<div class="normal-text"> 
+	<b>Spiegazione degli argomenti:</b><br>
+	/generalize: Rimuove le informazioni specifiche della macchina, incluso il SID.<br>
+	/oobe: All'avvio successivo, Windows mostrerà la schermata di benvenuto Out-of-Box Experience (OOBE).<br>
+	/shutdown: Dopo l'operazione, il sistema verrà spento ( /reboot invece per riavviare).<br><br>
+	Nota: Se il server è parte di un dominio, andrà rimosso dal dominio prima di eseguire Sysprep, altrimenti potrebbero verificarsi problemi con l'accesso dopo il riavvio.
+</div>
+
+<!-- Visualizzare SID --> 
+<br> 
+<div class="bold-text">Visualizzare SID</div> 
+
+<div class="normal-text">
+	Per visualizzare il SID della macchina su Windows Server (o qualsiasi sistema Windows), usare uno dei seguenti metodi:
+</div>
+
+<!-- Metodo 1 --> 
+<br> 
+<div class="bold-text">Metodo 1: Usare WMIC (Prompt dei comandi)</div> 
+
+<div class="normal-text">
+	Aprire un Prompt dei comandi come amministratore ed eseguire:
+</div>
+
+<div class="container"> 
+    <div class="sample" id="sample2">wmic useraccount get name,sid</div> 
+    <button onclick="CopyCommand('sample2')">Copy</button> 
+</div> 
+
+<div class="normal-text"> 
+	Questo comando elenca il SID di tutti gli account utente locali, incluso l'account Administrator.<br><br>
+	Per ottenere il SID della macchina (detto anche Machine SID), usare:
+</div>
+
+<div class="container"> 
+    <div class="sample" id="sample3">wmic computersystem get domain,name</div> 
+    <button onclick="CopyCommand('sample3')">Copy</button> 
+</div> 
+
+<div class="normal-text"> 
+	Il SID della macchina è il SID dell'account Administrator, senza il segmento finale.
+</div>
+
+<!-- Metodo 2 --> 
+<br> 
+<div class="bold-text">Metodo 2: Usare PowerShell</div> 
+
+<div class="normal-text">
+	Aprire PowerShell come amministratore ed eseguire:
+</div>
+
+<div class="container"> 
+    <div class="sample" id="sample4">Get-WmiObject Win32_UserAccount | Select Name, SID</div> 
+    <button onclick="CopyCommand('sample4')">Copy</button> 
+</div> 
+
+<div class="normal-text"> 
+	Oppure, per ottenere direttamente il SID della macchina:
+</div>
+
+<div class="container"> 
+    <div class="sample" id="sample5">$ComputerSID = (Get-WmiObject Win32_ComputerSystem).Domain + "\" + (Get-WmiObject Win32_ComputerSystem).Name
+```
+
+Write-Output "SID della macchina: $ComputerSID"</div> <button onclick="CopyCommand('sample5')">Copy</button> </div>
+
+```
+<!-- Metodo 3 --> 
+<br> 
+<div class="bold-text">Metodo 3: Usare PsGetSid (da Sysinternals)</div> 
+
+<div class="normal-text">
+	Questo metodo utilizza lo strumento PsGetSid della suite Sysinternals:<br><br>
+	Scaricare PsGetSid da Microsoft Sysinternals.<br><br>
+	Aprire un Prompt dei comandi come amministratore.<br><br>
+	Eseguire:
+</div>
+
+<div class="container"> 
+    <div class="sample" id="sample6">psgetsid</div> 
+    <button onclick="CopyCommand('sample6')">Copy</button> 
+</div> 
+
+<div class="normal-text"> 
+	Nota: Il SID della macchina è utile per identificare univocamente un sistema in rete. Se due macchine hanno lo stesso SID (ad esempio, se è stato clonato un server senza eseguire Sysprep), possono verificarsi problemi di autenticazione.
+</div>
+ 
+<script>	 
+	function CopyCommand(sampleId) { 
+		const textToCopy = document.getElementById(sampleId).innerText; 
+		navigator.clipboard.writeText(textToCopy).then(function () {			 
+		}).catch(function (err) { 
+		}); 
+	} 
+</script> 
+
+</body> 
+
+</html>
