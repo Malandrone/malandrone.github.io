@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">EXCEL CALCULATIONS</h1>
+
+    <br>
+    <br>
+
+    <!-- Introduzione -->
+    <div class="bold-text">Creazione tabella pivot</div>
+
+    <div class="normal-text">
+        Supponiamo di avere un foglio Excel denominato <b>items</b>, contenente
+        una colonna chiamata <b>CreationDate</b>.
+        <br><br>
+        La colonna contiene una data per ogni record, ad esempio:
+        <br><br>
+        <b>01/09/2026</b><br>
+        <b>01/09/2026</b><br>
+        <b>02/09/2026</b><br>
+        <b>03/09/2026</b><br>
+        <b>03/09/2026</b><br>
+        <b>03/09/2026</b>
+        <br><br>
+        L'obiettivo è creare una <b>tabella pivot</b> che permetta di visualizzare,
+        per ogni data, il numero di volte in cui quella data compare nella colonna
+        <b>CreationDate</b>.
+        <br><br>
+        Il risultato potrà quindi essere utilizzato per creare un grafico nel quale:
+        <br><br>
+        <b>Asse X:</b> le date<br>
+        <b>Asse Y:</b> numero di occorrenze della data
+    </div>
+
+
+    <!-- Verifica dati -->
+    <br>
+    <div class="bold-text">1. Verificare i dati</div>
+
+    <div class="normal-text">
+        Prima di creare la tabella pivot è importante verificare che la colonna
+        <b>CreationDate</b> contenga effettivamente delle <b>date riconosciute da Excel</b>
+        e non semplici stringhe di testo.
+        <br><br>
+        Le date dovrebbero essere visualizzate, ad esempio, nel formato:
+        <b>dd/mm/yyyy</b>.
+        <br><br>
+        Per verificare il formato di una cella, selezionare una delle date e controllare
+        il formato dalla scheda <b>Home</b>, nella sezione relativa al formato numero.
+        <br><br>
+        Se Excel non riconosce le date come valori data, la tabella pivot potrebbe
+        comportarsi in modo inatteso e potrebbe essere necessario convertire
+        preventivamente i valori.
+    </div>
+
+
+    <!-- Selezione dati -->
+    <br>
+    <div class="bold-text">2. Selezionare i dati</div>
+
+    <div class="normal-text">
+        Selezionare l'intervallo contenente i dati da utilizzare nella tabella pivot.
+        <br><br>
+        Se il foglio <b>items</b> contiene solamente la colonna
+        <b>CreationDate</b>, è sufficiente selezionare la colonna e tutte le righe
+        contenenti dati.
+        <br><br>
+        Se invece il foglio contiene anche altre colonne relative ai record,
+        è preferibile selezionare <b>l'intera tabella dei dati</b>, includendo
+        l'intestazione <b>CreationDate</b>.
+        <br><br>
+        Un metodo pratico consiste nel cliccare all'interno dell'intervallo dei dati
+        e lasciare che Excel individui automaticamente l'area utilizzata quando
+        si crea la tabella pivot.
+    </div>
+
+
+    <!-- Inserimento Pivot -->
+    <br>
+    <div class="bold-text">3. Inserire la tabella pivot</div>
+
+    <div class="normal-text">
+        Con i dati selezionati:
+        <br><br>
+        <b>1.</b> Aprire la scheda <b>Inserisci</b> nella barra multifunzione di Excel.
+        <br><br>
+        <b>2.</b> Fare clic su <b>Tabella Pivot</b>.
+        <br><br>
+        <b>3.</b> Nella finestra "Crea tabella pivot", verificare che l'intervallo
+        selezionato sia corretto.
+        <br><br>
+        <b>4.</b> Selezionare <b>Nuovo foglio di lavoro</b> per creare la tabella
+        pivot in un nuovo foglio.
+        <br><br>
+        <b>5.</b> Fare clic su <b>OK</b>.
+        <br><br>
+        Excel creerà una nuova tabella pivot e visualizzerà il pannello
+        <b>Campi tabella pivot</b>, generalmente nella parte destra della finestra.
+    </div>
+
+
+    <!-- Configurazione -->
+    <br>
+    <div class="bold-text">4. Configurare la tabella pivot</div>
+
+    <div class="normal-text">
+        Nel pannello <b>Campi tabella pivot</b> sarà disponibile il campo
+        <b>CreationDate</b>.
+        <br><br>
+        Per ottenere il risultato desiderato, utilizzare lo stesso campo
+        <b>CreationDate</b> due volte.
+        <br><br>
+        <b>Primo passaggio:</b>
+        trascinare <b>CreationDate</b> nell'area <b>Righe</b>.
+        <br><br>
+        In questo modo Excel mostrerà l'elenco delle date presenti nei dati.
+        Ogni data verrà normalmente visualizzata una sola volta.
+        <br><br>
+        <b>Secondo passaggio:</b>
+        trascinare nuovamente <b>CreationDate</b> nell'area <b>Valori</b>.
+        <br><br>
+        In questo modo Excel calcolerà il numero di record associati a ciascuna
+        data.
+        <br><br>
+        Il risultato sarà concettualmente simile al seguente:
+        <br><br>
+        <b>Data &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Conteggio</b><br>
+        01/09/2026 &nbsp;&nbsp;&nbsp; 2<br>
+        02/09/2026 &nbsp;&nbsp;&nbsp; 1<br>
+        03/09/2026 &nbsp;&nbsp;&nbsp; 3
+        <br><br>
+        In questo modo è possibile vedere immediatamente quante volte ogni data
+        compare nel dataset.
+    </div>
+
+
+    <!-- Conteggio -->
+    <br>
+    <div class="bold-text">5. Verificare il tipo di calcolo</div>
+
+    <div class="normal-text">
+        Quando un campo contenente date viene trascinato nell'area <b>Valori</b>,
+        Excel dovrebbe utilizzare automaticamente l'operazione <b>Conteggio</b>.
+        <br><br>
+        È comunque consigliabile verificare l'impostazione.
+        <br><br>
+        Nell'area <b>Valori</b>, fare clic sulla voce relativa a
+        <b>CreationDate</b> e selezionare:
+        <br><br>
+        <b>Impostazioni campo valore...</b>
+        <br><br>
+        Nella finestra visualizzata selezionare <b>Conteggio</b> e confermare
+        con <b>OK</b>.
+        <br><br>
+        Il campo potrebbe quindi essere visualizzato come:
+        <br><br>
+        <b>Conteggio di CreationDate</b>
+        <br><br>
+        <b>Nota:</b> non deve essere utilizzata la funzione <b>Somma</b>.
+        L'obiettivo è infatti contare quante volte ciascuna data compare,
+        non sommare i valori delle date.
+    </div>
+
+
+    <!-- Raggruppamento date -->
+    <br>
+    <div class="bold-text">6. Gestire il raggruppamento delle date</div>
+
+    <div class="normal-text">
+        A seconda della versione di Excel e della struttura dei dati, Excel potrebbe
+        raggruppare automaticamente le date per <b>Anno</b>, <b>Trimestre</b>,
+        <b>Mese</b> o altri intervalli temporali.
+        <br><br>
+        Se l'obiettivo è visualizzare <b>ogni singola data</b>, è necessario
+        assicurarsi che il campo <b>CreationDate</b> nell'area <b>Righe</b>
+        non sia raggruppato per mese o anno.
+        <br><br>
+        Se Excel ha raggruppato automaticamente le date, fare clic con il tasto
+        destro su una delle date della tabella pivot e scegliere
+        <b>Separa</b> / <b>Separa raggruppamento</b>, a seconda della versione
+        di Excel.
+        <br><br>
+        A questo punto dovrebbero essere visualizzate le singole date.
+    </div>
+
+
+    <!-- Ordinamento -->
+    <br>
+    <div class="bold-text">7. Ordinare le date</div>
+
+    <div class="normal-text">
+        Per ottenere un grafico leggibile, è consigliabile visualizzare le date
+        in ordine cronologico.
+        <br><br>
+        Se necessario, fare clic su una delle date nella tabella pivot e utilizzare
+        l'ordinamento <b>Dal più vecchio al più recente</b>.
+        <br><br>
+        Il risultato sarà quindi ordinato temporalmente, ad esempio:
+        <br><br>
+        01/09/2026<br>
+        02/09/2026<br>
+        03/09/2026<br>
+        04/09/2026<br>
+        05/09/2026
+        <br><br>
+        Questo rende il successivo grafico molto più semplice da interpretare.
+    </div>
+
+
+    <!-- Creazione grafico -->
+    <br>
+    <div class="bold-text">8. Creare il grafico</div>
+
+    <div class="normal-text">
+        Una volta configurata la tabella pivot, è possibile creare il grafico.
+        <br><br>
+        <b>1.</b> Fare clic su una qualsiasi cella della tabella pivot.
+        <br><br>
+        <b>2.</b> Aprire la scheda <b>Inserisci</b>.
+        <br><br>
+        <b>3.</b> Selezionare il tipo di grafico desiderato.
+        <br><br>
+        Per questo tipo di analisi è particolarmente indicato un
+        <b>grafico a colonne</b>.
+        <br><br>
+        Excel utilizzerà automaticamente i dati della tabella pivot per costruire
+        il grafico.
+        <br><br>
+        L'asse orizzontale rappresenterà le <b>date</b>, mentre l'asse verticale
+        rappresenterà il <b>numero di occorrenze</b>.
+    </div>
+
+
+    <!-- Personalizzazione -->
+    <br>
+    <div class="bold-text">9. Personalizzare il grafico</div>
+
+    <div class="normal-text">
+        Una volta creato il grafico, è possibile personalizzarlo selezionandolo
+        e utilizzando gli strumenti disponibili nella barra multifunzione.
+        <br><br>
+        Alcune personalizzazioni consigliate sono:
+        <br><br>
+        <b>Titolo:</b> ad esempio "Numero di record per CreationDate".
+        <br><br>
+        <b>Asse X:</b> visualizzare le date in ordine cronologico.
+        <br><br>
+        <b>Asse Y:</b> indicare il numero di occorrenze.
+        <br><br>
+        <b>Etichette dati:</b> possono essere abilitate per visualizzare
+        direttamente sul grafico il numero di record relativo a ciascuna data.
+        <br><br>
+        Per una serie temporale con molte date, può essere preferibile un
+        <b>grafico a colonne</b> rispetto a un grafico a torta, perché permette
+        di leggere più facilmente l'andamento nel tempo.
+    </div>
+
+
+    <!-- Aggiornamento -->
+    <br>
+    <div class="bold-text">10. Aggiornare la tabella pivot</div>
+
+    <div class="normal-text">
+        Se vengono aggiunti nuovi record al foglio <b>items</b>, la tabella pivot
+        potrebbe non includerli automaticamente, a seconda dell'intervallo
+        utilizzato come origine dati.
+        <br><br>
+        Per aggiornare una tabella pivot esistente, fare clic con il tasto destro
+        all'interno della tabella e selezionare <b>Aggiorna</b>.
+        <br><br>
+        Se i dati vengono aggiunti frequentemente, è consigliabile trasformare
+        l'intervallo di origine in una vera e propria <b>Tabella Excel</b>
+        tramite <b>Home → Formatta come tabella</b> oppure
+        <b>Inserisci → Tabella</b>.
+        <br><br>
+        In questo modo l'intervallo della tabella si espande automaticamente
+        quando vengono aggiunti nuovi record e la tabella pivot può essere
+        aggiornata utilizzando il nuovo contenuto.
+    </div>
+
+
+    <!-- Risultato finale -->
+    <br>
+    <div class="bold-text">Risultato finale</div>
+
+    <div class="normal-text">
+        Al termine della procedura si avrà una struttura simile alla seguente:
+        <br><br>
+        <b>Tabella Pivot</b>
+        <br><br>
+        CreationDate &nbsp;&nbsp;&nbsp;&nbsp; Conteggio di CreationDate<br>
+        01/09/2026 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2<br>
+        02/09/2026 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1<br>
+        03/09/2026 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3<br>
+        04/09/2026 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5
+        <br><br>
+        Il grafico associato permetterà quindi di visualizzare immediatamente
+        la frequenza con cui ogni singola data compare nella colonna
+        <b>CreationDate</b>.
+        <br><br>
+        In pratica, per ogni data avremo una barra la cui altezza rappresenta
+        il numero di record presenti con quella specifica data.
+    </div>
+
+
+</body>
+</html>
