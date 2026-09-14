@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">WINDOWS SERVER MANAGEMENT</h1>
+
+    <br>
+    <br>
+
+    <!-- Introduzione -->
+    <div class="bold-text">Introduzione</div>
+
+    <div class="normal-text">
+        Questa procedura permette di collegare una cartella condivisa tramite protocollo
+        <b>SMB (Server Message Block)</b> presente su un server Linux a un sistema
+        Windows, assegnandole una lettera di unità, ad esempio <b>Z:</b>.
+        <br><br>
+        Una volta configurato il mapping, la share sarà accessibile da Windows
+        tramite il percorso:
+        <br><br>
+        <b>Z:\</b>
+        <br><br>
+        Nell'esempio viene utilizzato il seguente scenario:
+        <br><br>
+        <b>Server Linux:</b> IP_DEL_SERVER_LINUX<br>
+        <b>Share SMB:</b> nome_share<br>
+        <b>Utente:</b> nomeutente<br>
+        <b>Unità Windows:</b> Z:
+        <br><br>
+        Sostituire i valori di esempio con quelli effettivamente configurati
+        sul server Linux.
+    </div>
+
+
+    <!-- Verificare raggiungibilità -->
+    <br>
+    <div class="bold-text">Verificare la raggiungibilità del server</div>
+
+    <div class="normal-text">
+        Prima di creare il mapping è consigliabile verificare che il server Linux
+        sia raggiungibile dalla macchina Windows.
+        <br><br>
+        Aprire un <b>Prompt dei comandi</b> o PowerShell ed eseguire:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">ping IP_DEL_SERVER_LINUX</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Se il server risponde al ping, la connettività IP di base è disponibile.
+        <br><br>
+        <b>Nota:</b> il ping può essere disabilitato sul server Linux o sulla rete.
+        In questo caso l'assenza di una risposta ICMP non significa necessariamente
+        che il servizio SMB non sia raggiungibile.
+    </div>
+
+
+    <!-- Verifica share -->
+    <br>
+    <div class="bold-text">Verificare la disponibilità della share SMB</div>
+
+    <div class="normal-text">
+        È possibile verificare quali condivisioni SMB sono pubblicate dal server
+        utilizzando il comando <b>net view</b>.
+        <br><br>
+        Eseguire:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">net view \\IP_DEL_SERVER_LINUX</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Se il server SMB è raggiungibile e consente l'enumerazione delle condivisioni,
+        nell'output dovrebbe comparire anche la share <b>nome_share</b>.
+        <br><br>
+        <b>Nota:</b> alcuni server SMB possono impedire l'enumerazione delle share.
+        In tal caso è comunque possibile che la condivisione sia accessibile
+        direttamente specificandone il percorso.
+    </div>
+
+
+    <!-- Creazione mapping -->
+    <br>
+    <div class="bold-text">Creare la share SMB persistente</div>
+
+    <div class="normal-text">
+        Per creare il mapping della share SMB all'unità <b>Z:</b>, aprire
+        un <b>Prompt dei comandi</b> e utilizzare il comando <b>net use</b>.
+        <br><br>
+        Il parametro <b>/persistent:yes</b> indica a Windows di mantenere il
+        mapping anche dopo il riavvio del computer.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">net use Z: \\IP_DEL_SERVER_LINUX\nome_share /user:nomeutente password /persistent:yes</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il comando è composto dai seguenti elementi:
+        <br><br>
+        <b>Z:</b> è la lettera di unità che verrà assegnata alla share.<br>
+        <b>\\IP_DEL_SERVER_LINUX\nome_share</b> è il percorso UNC della condivisione SMB.<br>
+        <b>/user:nomeutente</b> specifica l'utente utilizzato per autenticarsi al server SMB.<br>
+        <b>password</b> rappresenta la password dell'utente SMB.<br>
+        <b>/persistent:yes</b> rende persistente il mapping.
+        <br><br>
+        <b>Importante:</b> nell'esempio la password viene inserita direttamente
+        nel comando. Questa modalità è comoda per un test, ma non è consigliata
+        in ambienti reali perché la password può essere esposta nella cronologia,
+        negli script o nei log.
+    </div>
+
+
+    <!-- Metodo con richiesta password -->
+    <br>
+    <div class="bold-text">Metodo consigliato: richiesta interattiva della password</div>
+
+    <div class="normal-text">
+        Per evitare di inserire la password direttamente nel comando, è possibile
+        utilizzare <b>net use</b> senza specificarla.
+        <br><br>
+        Windows richiederà quindi la password in modo interattivo.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">net use Z: \\IP_DEL_SERVER_LINUX\nome_share /user:nomeutente /persistent:yes</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Dopo l'esecuzione del comando verrà richiesta la password dell'utente
+        <b>nomeutente</b>.
+        <br><br>
+        Questa modalità è preferibile quando si esegue manualmente la configurazione,
+        perché evita di scrivere la password direttamente sulla riga di comando.
+    </div>
+
+
+    <!-- Verifica mapping -->
+    <br>
+    <div class="bold-text">Verificare il mapping dell'unità</div>
+
+    <div class="normal-text">
+        Dopo aver creato il mapping è possibile verificare le unità di rete
+        configurate utilizzando:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">net use</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Nell'elenco dovrebbe comparire l'unità <b>Z:</b> associata al percorso
+        UNC del server Linux.
+        <br><br>
+        È inoltre possibile verificare direttamente il contenuto dell'unità:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">dir Z:\</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Se il comando restituisce il contenuto della directory condivisa,
+        il mapping è operativo e la share è accessibile.
+    </div>
+
+
+    <!-- Get-SmbConnection -->
+    <br>
+    <div class="bold-text">Verificare la connessione SMB</div>
+
+    <div class="normal-text">
+        Windows mette a disposizione il cmdlet PowerShell
+        <b>Get-SmbConnection</b> per visualizzare le connessioni SMB attualmente
+        attive.
+        <br><br>
+        Aprire <b>PowerShell</b> ed eseguire:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">Get-SmbConnection</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        L'output permette di visualizzare informazioni sulla connessione SMB,
+        tra cui il server remoto, la share, l'utente e il protocollo utilizzato.
+        <br><br>
+        Per ottenere un output più leggibile è possibile utilizzare:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">Get-SmbConnection | Format-Table ServerName, ShareName, UserName, Dialect, NumOpens</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        In particolare:
+        <br><br>
+        <b>ServerName</b>: nome o indirizzo del server SMB.<br>
+        <b>ShareName</b>: nome della condivisione SMB.<br>
+        <b>UserName</b>: account utilizzato per la connessione.<br>
+        <b>Dialect</b>: versione del protocollo SMB negoziata.<br>
+        <b>NumOpens</b>: numero di handle aperti sulla connessione.
+    </div>
+
+
+    <!-- Verifica specifica -->
+    <br>
+    <div class="bold-text">Verificare una specifica connessione</div>
+
+    <div class="normal-text">
+        Se sono presenti numerose connessioni SMB, è possibile filtrare l'output
+        per il server Linux specifico.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">Get-SmbConnection | Where-Object ServerName -eq "IP_DEL_SERVER_LINUX"</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        In questo modo verranno visualizzate soltanto le connessioni SMB relative
+        al server specificato.
+    </div>
+
+
+    <!-- Accesso share -->
+    <br>
+    <div class="bold-text">Accedere alla share</div>
+
+    <div class="normal-text">
+        Una volta configurato il mapping, la share può essere utilizzata come
+        una normale unità locale.
+        <br><br>
+        È possibile verificare l'accesso tramite PowerShell:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample10">Get-ChildItem Z:\</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Oppure tramite Prompt dei comandi:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample11">dir Z:\</div>
+        <button onclick="CopyCommand('sample11')">Copy</button>
+    </div>
+
+
+    <!-- Persistenza -->
+    <br>
+    <div class="bold-text">Verificare la persistenza del mapping</div>
+
+    <div class="normal-text">
+        Il parametro <b>/persistent:yes</b> utilizzato durante la creazione
+        del mapping indica a Windows di memorizzare la connessione come persistente.
+        <br><br>
+        È possibile controllare le connessioni configurate con:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample12">net use</div>
+        <button onclick="CopyCommand('sample12')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Dopo un riavvio del computer, Windows tenterà di ristabilire il mapping
+        dell'unità di rete.
+        <br><br>
+        <b>Nota:</b> la disponibilità effettiva della share dopo il riavvio dipende
+        anche dalla raggiungibilità del server SMB e dalla disponibilità delle
+        credenziali necessarie per l'autenticazione.
+    </div>
+
+
+    <!-- Rimuovere mapping -->
+    <br>
+    <div class="bold-text">Rimuovere il mapping</div>
+
+    <div class="normal-text">
+        Per rimuovere il mapping dell'unità <b>Z:</b> è possibile utilizzare:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample13">net use Z: /delete</div>
+        <button onclick="CopyCommand('sample13')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Windows chiederà conferma prima di rimuovere la connessione.
+        <br><br>
+        Per rimuovere il mapping senza richiesta di conferma:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample14">net use Z: /delete /y</div>
+        <button onclick="CopyCommand('sample14')">Copy</button>
+    </div>
+
+
+    <!-- Riconfigurare persistente -->
+    <br>
+    <div class="bold-text">Rendere persistente una connessione esistente</div>
+
+    <div class="normal-text">
+        Se una connessione è stata creata come temporanea, è possibile ricrearla
+        come persistente utilizzando nuovamente <b>net use</b> con il parametro
+        <b>/persistent:yes</b>.
+        <br><br>
+        Esempio:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample15">net use Z: \\IP_DEL_SERVER_LINUX\nome_share /user:nomeutente /persistent:yes</div>
+        <button onclick="CopyCommand('sample15')">Copy</button>
+    </div>
+
+
+    <!-- Problemi autenticazione -->
+    <br>
+    <div class="bold-text">Problemi di autenticazione</div>
+
+    <div class="normal-text">
+        Windows normalmente non consente di utilizzare contemporaneamente,
+        verso lo stesso server SMB, connessioni con credenziali differenti.
+        <br><br>
+        Se viene visualizzato un errore relativo a connessioni multiple con
+        credenziali diverse, è possibile visualizzare le connessioni esistenti:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample16">net use</div>
+        <button onclick="CopyCommand('sample16')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Se necessario, rimuovere la connessione precedente e riprovare con
+        le credenziali corrette.
+        <br><br>
+        Ad esempio:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample17">net use \\IP_DEL_SERVER_LINUX\nome_share /delete</div>
+        <button onclick="CopyCommand('sample17')">Copy</button>
+    </div>
+
+
+    <!-- Verifica finale -->
+    <br>
+    <div class="bold-text">Verifica finale</div>
+
+    <div class="normal-text">
+        Al termine della configurazione è consigliabile eseguire i seguenti
+        controlli:
+        <br><br>
+        <b>1.</b> Verificare che il mapping Z: sia presente:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample18">net use</div>
+        <button onclick="CopyCommand('sample18')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        <b>2.</b> Verificare che la share sia accessibile:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample19">dir Z:\</div>
+        <button onclick="CopyCommand('sample19')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        <b>3.</b> Verificare la connessione SMB tramite PowerShell:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample20">Get-SmbConnection | Format-Table ServerName, ShareName, UserName, Dialect, NumOpens</div>
+        <button onclick="CopyCommand('sample20')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Se tutti i controlli hanno esito positivo, la share SMB Linux è stata
+        correttamente collegata a Windows come unità <b>Z:</b> e configurata
+        come connessione persistente.
+        <br><br>
+        <b>Nota di sicurezza:</b> evitare, quando possibile, di inserire password
+        direttamente nei comandi o negli script. Utilizzare credenziali dedicate
+        alla share e applicare sul server Linux i permessi SMB e filesystem minimi
+        necessari.
+    </div>
+
+
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
