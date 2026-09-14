@@ -87,11 +87,10 @@
 
 <div class="container"> 
     <div class="sample" id="sample5">$ComputerSID = (Get-WmiObject Win32_ComputerSystem).Domain + "\" + (Get-WmiObject Win32_ComputerSystem).Name
-```
+
 
 Write-Output "SID della macchina: $ComputerSID"</div> <button onclick="CopyCommand('sample5')">Copy</button> </div>
 
-```
 <!-- Metodo 3 --> 
 <br> 
 <div class="bold-text">Metodo 3: Usare PsGetSid (da Sysinternals)</div> 
