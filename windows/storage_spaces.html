@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">WINDOWS SERVER MANAGEMENT</h1>
+
+    <br>
+    <br>
+
+    <!-- Verifica dischi -->
+    <div class="bold-text">Verifica dischi</div>
+
+    <div class="normal-text">
+        Prima di creare lo Storage Pool è necessario verificare che i dischi fisici destinati
+        allo Storage Spaces siano correttamente rilevati dal sistema e siano disponibili per
+        essere aggiunti a un pool.
+        <br><br>
+        Aprire <b>Windows PowerShell come amministratore</b> ed eseguire i seguenti comandi.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">Get-Disk | Format-Table Number, FriendlyName, Size, PartitionStyle, OperationalStatus</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il primo comando mostra i dischi rilevati dal sistema, indicando numero, nome,
+        dimensione, stile di partizionamento e stato operativo.
+        <br><br>
+        Successivamente verificare quali dischi possono essere utilizzati da Storage Spaces:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">Get-PhysicalDisk | Format-Table FriendlyName, MediaType, Size, CanPool, CannotPoolReason</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Per i dischi che si desidera utilizzare nel nuovo Storage Pool, la proprietà
+        <b>CanPool</b> deve risultare <b>True</b>.
+        <br><br>
+        Se <b>CanPool</b> è <b>False</b>, la proprietà <b>CannotPoolReason</b> può aiutare
+        a individuare il motivo per cui il disco non è disponibile.
+        <br><br>
+        <b>Attenzione:</b> assicurarsi che i dischi selezionati non contengano dati che
+        devono essere conservati, perché le operazioni successive possono comportare
+        la loro inizializzazione e formattazione.
+    </div>
+
+
+    <!-- Installazione BitLocker -->
+    <br>
+    <div class="bold-text">Installare le funzionalità necessarie</div>
+
+    <div class="normal-text">
+        BitLocker non è installato per impostazione predefinita su Windows Server.
+        Per installarlo, aprire <b>Windows PowerShell come amministratore</b> ed eseguire:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">Install-WindowsFeature BitLocker -IncludeAllSubFeature -IncludeManagementTools</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il parametro <b>-IncludeAllSubFeature</b> installa le sotto-funzionalità disponibili,
+        mentre <b>-IncludeManagementTools</b> installa anche gli strumenti di gestione.
+        <br><br>
+        Al termine dell'installazione è necessario riavviare il server:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">Restart-Computer</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Dopo il riavvio è possibile verificare che la funzionalità BitLocker sia installata:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">Get-WindowsFeature BitLocker</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        La funzionalità <b>BitLocker</b> dovrebbe risultare installata e avere lo stato
+        <b>Installed</b>.
+    </div>
+
+
+    <!-- Creazione Storage Pool -->
+    <br>
+    <div class="bold-text">Creare lo Storage Pool</div>
+
+    <div class="normal-text">
+        Una volta verificato che i dischi siano disponibili per Storage Spaces,
+        è possibile creare lo Storage Pool.
+        <br><br>
+        Il comando seguente utilizza automaticamente tutti i dischi fisici per i quali
+        <b>CanPool</b> è impostato su <b>True</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">New-StoragePool -FriendlyName "MLNDataPool" -StorageSubsystemFriendlyName "Storage Spaces*" -PhysicalDisks (Get-PhysicalDisk | Where-Object CanPool -eq $true)</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il pool creato viene denominato <b>MLNDataPool</b>.
+        <br><br>
+        Verificare lo stato dello Storage Pool:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">Get-StoragePool | Format-Table FriendlyName, HealthStatus, OperationalStatus, Size, AllocatedSize</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Controllare in particolare <b>HealthStatus</b> e <b>OperationalStatus</b>.
+        Il pool dovrebbe risultare integro e operativo.
+    </div>
+
+
+    <!-- Creazione Storage Space -->
+    <br>
+    <div class="bold-text">Creare lo Storage Space</div>
+
+    <div class="normal-text">
+        All'interno dello Storage Pool viene ora creato uno Storage Space denominato
+        <b>MLNDataStorage</b>.
+        <br><br>
+        Il comando utilizza:
+        <br>
+        <b>Simple</b>: i dati vengono distribuiti sui dischi senza ridondanza.
+        <br>
+        <b>Fixed</b>: la dimensione dello spazio virtuale viene allocata immediatamente.
+        <br>
+        <b>UseMaximumSize</b>: viene utilizzata tutta la capacità disponibile nel pool.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">New-VirtualDisk -StoragePoolFriendlyName "MLNDataPool" -FriendlyName "MLNDataStorage" -ResiliencySettingName Simple -ProvisioningType Fixed -UseMaximumSize</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        <b>Attenzione:</b> la modalità <b>Simple</b> non offre tolleranza al guasto dei dischi.
+        Se uno dei dischi che compongono lo spazio viene perso, i dati possono diventare
+        inaccessibili. Per dati importanti valutare una configurazione ridondata, ad esempio
+        <b>Mirror</b>, in funzione del numero di dischi disponibili e degli obiettivi di
+        affidabilità.
+        <br><br>
+        Verificare lo Storage Space appena creato:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">Get-VirtualDisk | Format-Table FriendlyName, ResiliencySettingName, HealthStatus, OperationalStatus, Size</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+
+    <!-- Inizializzazione disco virtuale -->
+    <br>
+    <div class="bold-text">Inizializzare il disco virtuale</div>
+
+    <div class="normal-text">
+        Lo Storage Space viene presentato a Windows come un disco virtuale.
+        Prima di poter creare il volume è necessario individuare il numero assegnato
+        da Windows al disco virtuale.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample10">Get-Disk | Format-Table Number, FriendlyName, OperationalStatus, PartitionStyle, Size</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Individuare nell'elenco il disco corrispondente a <b>MLNDataStorage</b>.
+        Nell'esempio seguente si suppone che il numero assegnato da Windows sia <b>3</b>.
+        <br><br>
+        <b>Verificare sempre il numero prima di eseguire il comando.</b>
+        Non utilizzare il valore 3 alla cieca se il disco virtuale ha ricevuto un numero
+        differente.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample11">Initialize-Disk -Number 3 -PartitionStyle GPT</div>
+        <button onclick="CopyCommand('sample11')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il parametro <b>-PartitionStyle GPT</b> inizializza il disco utilizzando la
+        moderna tabella delle partizioni GUID Partition Table (GPT).
+        <br><br>
+        <b>Nota:</b> sostituire <b>3</b> con il numero effettivamente assegnato al
+        disco virtuale.
+    </div>
+
+
+    <!-- Creazione volume -->
+    <br>
+    <div class="bold-text">Creare il volume</div>
+
+    <div class="normal-text">
+        Una volta inizializzato il disco virtuale, creare una partizione utilizzando
+        tutta la capacità disponibile e assegnarle la lettera <b>E:</b>.
+        <br><br>
+        Anche in questo caso, nell'esempio il disco virtuale corrisponde al numero <b>3</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample12">New-Partition -DiskNumber 3 -UseMaximumSize -DriveLetter E</div>
+        <button onclick="CopyCommand('sample12')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Formattare quindi il volume utilizzando NTFS.
+        L'etichetta del volume sarà <b>MLNDataVolume</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample13">Format-Volume -DriveLetter E -FileSystem NTFS -NewFileSystemLabel "MLNDataVolume" -AllocationUnitSize 65536 -Confirm:$false</div>
+        <button onclick="CopyCommand('sample13')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il parametro <b>-AllocationUnitSize 65536</b> imposta una dimensione dell'unità
+        di allocazione di 64 KiB.
+        <br><br>
+        Questa impostazione può essere appropriata per determinati carichi di lavoro,
+        ma non dovrebbe essere considerata universalmente migliore: la dimensione
+        dell'unità di allocazione dovrebbe essere scelta in funzione del tipo di dati
+        e del carico di lavoro previsto.
+    </div>
+
+
+    <!-- Verifica Storage -->
+    <br>
+    <div class="bold-text">Verificare Storage Pool, Storage Space e volume</div>
+
+    <div class="normal-text">
+        Dopo la creazione del volume verificare che lo Storage Pool sia operativo:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample14">Get-StoragePool | Format-Table FriendlyName, HealthStatus, OperationalStatus, Size, AllocatedSize</div>
+        <button onclick="CopyCommand('sample14')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Verificare quindi lo stato dello Storage Space:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample15">Get-VirtualDisk | Format-Table FriendlyName, ResiliencySettingName, HealthStatus, OperationalStatus, Size</div>
+        <button onclick="CopyCommand('sample15')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Infine verificare il volume E::
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample16">Get-Volume -DriveLetter E | Format-Table DriveLetter, FileSystem, FileSystemLabel, HealthStatus, Size, SizeRemaining</div>
+        <button onclick="CopyCommand('sample16')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il volume dovrebbe risultare formattato con filesystem <b>NTFS</b>, avere
+        etichetta <b>MLNDataVolume</b> e risultare integro.
+        <br><br>
+        A questo punto è consigliabile <b>riavviare il server</b> prima di procedere
+        con la configurazione di BitLocker.
+    </div>
+
+
+    <!-- Verifica BitLocker -->
+    <br>
+    <div class="bold-text">Verificare lo stato di BitLocker</div>
+
+    <div class="normal-text">
+        Dopo il riavvio, aprire nuovamente PowerShell come amministratore e verificare
+        lo stato del volume E:.
+        <br><br>
+        <b>Nota:</b> il comando originale riportava <b>F:</b>, ma il volume creato
+        nella procedura precedente utilizza la lettera <b>E:</b>. Per questo tutorial
+        viene utilizzata E:.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample17">Get-BitLockerVolume -MountPoint "E:"</div>
+        <button onclick="CopyCommand('sample17')">Copy</button>
+    </div>
+
+
+    <!-- Abilitazione BitLocker -->
+    <br>
+    <div class="bold-text">Applicare la cifratura BitLocker con password</div>
+
+    <div class="normal-text">
+        Per proteggere il volume E: con BitLocker è possibile utilizzare una password
+        come protezione primaria.
+        <br><br>
+        Prima di abilitarla, chiedere la password in modo sicuro utilizzando
+        <b>Read-Host -AsSecureString</b>. In questo modo la password non viene
+        inserita direttamente nel comando né visualizzata durante la digitazione.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample18">$Password = Read-Host "Inserisci la password BitLocker" -AsSecureString</div>
+        <button onclick="CopyCommand('sample18')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Utilizzare quindi la password appena acquisita per iniziare la cifratura:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample19">Enable-BitLocker -MountPoint "E:" -EncryptionMethod XtsAes256 -PasswordProtector -Password $Password</div>
+        <button onclick="CopyCommand('sample19')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        In questo esempio viene utilizzato <b>XTS-AES 256 bit</b>.
+        <br><br>
+        <b>Importante:</b> la password BitLocker deve essere conservata in modo sicuro.
+        È inoltre fortemente consigliato configurare un <b>Recovery Password Protector</b>
+        e conservare la relativa chiave di ripristino in una posizione sicura e separata
+        dal server.
+    </div>
+
+
+    <!-- Recovery Protector -->
+    <br>
+    <div class="bold-text">Generare il Recovery Protector</div>
+
+    <div class="normal-text">
+        Aggiungere una protezione di ripristino al volume. Questa protezione permette
+        di recuperare l'accesso al volume nel caso in cui non sia disponibile la
+        protezione primaria.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample20">Add-BitLockerKeyProtector -MountPoint "E:" -RecoveryPasswordProtector</div>
+        <button onclick="CopyCommand('sample20')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Visualizzare quindi le protezioni associate al volume:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample21">(Get-BitLockerVolume -MountPoint "E:").KeyProtector</div>
+        <button onclick="CopyCommand('sample21')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Nell'output sarà presente anche il <b>Recovery Password</b>.
+        <br><br>
+        <b>Attenzione:</b> la recovery password è una credenziale sensibile.
+        Deve essere salvata in una posizione sicura e non lasciata semplicemente
+        nell'output della console o in un file non protetto.
+    </div>
+
+
+    <!-- Verifica avanzamento -->
+    <br>
+    <div class="bold-text">Verificare l'avanzamento della cifratura</div>
+
+    <div class="normal-text">
+        Per controllare lo stato della cifratura e la percentuale di avanzamento:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample22">Get-BitLockerVolume -MountPoint "E:" | Format-List MountPoint, VolumeStatus, EncryptionPercentage, EncryptionMethod, KeyProtector</div>
+        <button onclick="CopyCommand('sample22')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Durante la cifratura, <b>EncryptionPercentage</b> indica la percentuale
+        completata.
+        <br><br>
+        Al termine della procedura il volume dovrebbe presentare valori simili a:
+        <br><br>
+        <b>VolumeStatus : FullyEncrypted</b><br>
+        <b>EncryptionPercentage : 100</b>
+        <br><br>
+        Il tempo necessario dipende dalla dimensione del volume, dal tipo di storage
+        e dalle prestazioni del sistema.
+    </div>
+
+
+    <!-- Sblocco BitLocker -->
+    <br>
+    <div class="bold-text">Sbloccare il volume BitLocker</div>
+
+    <div class="normal-text">
+        <b>Nota importante:</b> il comando <b>Unlock-BitLocker</b> non decifra il volume.
+        Lo <b>sblocca</b>, permettendo nuovamente l'accesso ai dati mantenendo attiva
+        la cifratura BitLocker.
+        <br><br>
+        Il parametro <b>-Password</b> richiede un valore di tipo <b>SecureString</b>.
+        Pertanto non è consigliabile utilizzare una password direttamente nel comando.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample23">$Password = Read-Host "Inserisci la password BitLocker" -AsSecureString</div>
+        <button onclick="CopyCommand('sample23')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Dopo aver inserito la password, utilizzarla per sbloccare il volume:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample24">Unlock-BitLocker -MountPoint "E:" -Password $Password</div>
+        <button onclick="CopyCommand('sample24')">Copy</button>
+    </div>
+
+
+    <!-- Sblocco automatico -->
+    <br>
+    <div class="bold-text">Sblocco automatico all'avvio</div>
+
+    <div class="normal-text">
+        Se l'obiettivo è fare in modo che il volume dati <b>E:</b> venga sbloccato
+        automaticamente dopo l'avvio del server, è preferibile valutare la funzionalità
+        di <b>BitLocker Auto-Unlock</b> invece di creare un'attività pianificata che
+        contenga una password in chiaro.
+        <br><br>
+        Dopo aver sbloccato il volume e verificato che il sistema sia configurato
+        correttamente, è possibile abilitare l'auto-unlock:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample25">Enable-BitLockerAutoUnlock -MountPoint "E:"</div>
+        <button onclick="CopyCommand('sample25')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Verificare quindi lo stato dell'auto-unlock:
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample26">Get-BitLockerVolume -MountPoint "E:" | Format-List MountPoint, VolumeStatus, AutoUnlockEnabled, AutoUnlockKeyProtector</div>
+        <button onclick="CopyCommand('sample26')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        <b>Nota di sicurezza:</b> memorizzare una password BitLocker direttamente
+        all'interno di un'attività pianificata o di uno script in chiaro è una pratica
+        sconsigliata, perché chiunque abbia accesso al file o alla configurazione
+        dell'attività potrebbe recuperarla.
+        <br><br>
+        Per un volume dati di un server, valutare quindi attentamente la soluzione
+        di auto-unlock, la gestione centralizzata delle recovery key e le policy
+        di sicurezza dell'ambiente.
+    </div>
+
+
+    <!-- Verifica finale -->
+    <br>
+    <div class="bold-text">Verifica finale</div>
+
+    <div class="normal-text">
+        Al termine della configurazione è possibile eseguire una verifica completa
+        dello Storage Pool, dello Storage Space, del volume e di BitLocker.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample27">Get-StoragePool | Format-Table FriendlyName, HealthStatus, OperationalStatus, Size, AllocatedSize</div>
+        <button onclick="CopyCommand('sample27')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample28">Get-VirtualDisk | Format-Table FriendlyName, ResiliencySettingName, HealthStatus, OperationalStatus, Size</div>
+        <button onclick="CopyCommand('sample28')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample29">Get-Volume -DriveLetter E | Format-Table DriveLetter, FileSystem, FileSystemLabel, HealthStatus, Size, SizeRemaining</div>
+        <button onclick="CopyCommand('sample29')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample30">Get-BitLockerVolume -MountPoint "E:" | Format-List MountPoint, VolumeStatus, EncryptionPercentage, EncryptionMethod, ProtectionStatus, KeyProtector</div>
+        <button onclick="CopyCommand('sample30')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Una configurazione completata correttamente dovrebbe mostrare:
+        <br><br>
+        <b>Storage Pool:</b> HealthStatus e OperationalStatus corretti<br>
+        <b>Virtual Disk:</b> operativo e con la resilienza configurata<br>
+        <b>Volume:</b> E:, NTFS e operativo<br>
+        <b>BitLocker:</b> VolumeStatus = FullyEncrypted<br>
+        <b>BitLocker:</b> EncryptionPercentage = 100
+    </div>
+
+
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
