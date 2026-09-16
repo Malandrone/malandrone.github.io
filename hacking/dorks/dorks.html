@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">Google Dorks</h1>
+
+    <br>
+    <div class="bold-text">Directory listing</div>
+
+    <div class="normal-text">
+        File di configurazione relativi a server di posta
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">intitle:"Index of" dovecot.conf</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">intitle:"Index of" exim4.conf</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">intitle:"Index of" sendmail.cf</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">intitle:"Index of" sendmail.mc</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">intitle:"Index of" sasl_passwd</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+    <br>
+    
+    <div class="normal-text">
+        File di configurazione database
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">intitle:"Index of" dovecot.conf</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">intitle:"Index of" filetype:.conf</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+    <br>
+   
+    <div class="normal-text">
+        File di configurazione di Apache Tomcat.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">intitle:"Index of" tomcat-users.xml</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+	
+	<br>
+    <div class="bold-text">Public share</div>
+
+    <div class="normal-text">
+        File con estensione specifica su condivisioni pubbliche
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">intitle:mp4 site:drive.google.com</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+    <br>
+	
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
