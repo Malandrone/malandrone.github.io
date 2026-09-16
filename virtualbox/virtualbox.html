@@ -232,14 +232,13 @@
         ad esempio D:\VirtualMachines, e il nome esatto della VM, ad esempio
         "My_VM".
         <br><br>
-        Successivamente aprire Utilità di pianificazione di Windows, creare una nuova
-        cartella e al suo interno creare una nuova attività.
+        Successivamente aprire Utilità di pianificazione di Windows e creare una nuova attività pianificata.
     </div>
 
     <div class="normal-text">
         Nella scheda "Generale" configurare l'attività in modo che possa essere
         eseguita anche quando l'utente non ha effettuato l'accesso e con privilegi
-        elevati, secondo le necessità dell'ambiente.
+        elevati.
     </div>
 
     <div class="normal-text">
@@ -248,15 +247,16 @@
     </div>
 
     <div class="normal-text">
-        Nella scheda "Azioni" selezionare "Avvio programma".
-        Impostare VBoxManage.exe come programma e specificare il nome della VM
-        con l'opzione startvm. L'opzione --type headless avvia la macchina virtuale
-        senza aprire una finestra dell'interfaccia grafica.
+        Nella scheda "Azioni" selezionare "Avvio programma" ed impostare:
     </div>
-
+	
     <div class="container">
         <div class="sample" id="sample18">C:\Program Files\Oracle\VirtualBox\VBoxManage.exe</div>
         <button onclick="CopyCommand('sample18')">Copy</button>
+    </div>
+	
+	<div class="normal-text">
+        Nei parametri specificare:
     </div>
 
     <div class="container">
