@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+<body>
+	<h1 id="page-title">Virtual Box Management</h1>
+
+ 
+    <br>
+    <div class="bold-text">Installazione delle Guest Additions su Linux</div>
+
+    <div class="normal-text">
+        Le Guest Additions devono essere installate nel sistema operativo guest per
+        utilizzare funzionalità come le cartelle condivise e una migliore integrazione
+        tra host e guest. Dalle impostazioni della VM, collegare la ISO delle Guest
+        Additions come unità ottica virtuale.
+    </div>
+
+    <div class="normal-text">
+        Installare i prerequisiti necessari alla compilazione dei moduli del kernel
+        delle Guest Additions.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">sudo apt update</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">sudo apt install build-essential dkms linux-headers-$(uname -r)</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Verificare le unità disponibili e individuare il dispositivo ottico contenente
+        la ISO delle Guest Additions. Nell'esempio il dispositivo è /dev/sr0.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">lsblk</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        L'output dovrebbe essere simile al seguente:
+        <br><br>
+        NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+        <br>
+        sda      8:0    0  50G  0 disk
+        <br>
+        ├─sda1   8:1    0   1M  0 part
+        <br>
+        └─sda2   8:2    0  50G  0 part /
+        <br>
+        sr0     11:0    1  51M  1 rom
+    </div>
+
+    <div class="normal-text">
+        Creare un punto di mount e montare l'unità ottica.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">sudo mkdir -p /mnt/vbox</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">sudo mount /dev/sr0 /mnt/vbox</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Verificare che nella ISO sia presente l'installer VBoxLinuxAdditions.run.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">ls -la /mnt/vbox</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Accedere alla directory contenente l'installer ed eseguirlo.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">cd /mnt/vbox</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">sudo ./VBoxLinuxAdditions.run</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Riavviare il sistema per caricare correttamente i moduli delle Guest Additions.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">sudo reboot</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Dopo il riavvio verificare che il modulo vboxguest sia stato caricato.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample10">lsmod | grep vbox</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Un output valido può contenere una riga simile alla seguente:
+        <br><br>
+        vboxguest             528384  2
+    </div>
+
+    <br>
+    <div class="bold-text">Aggiunta di un disco VDI a una macchina virtuale</div>
+
+    <div class="normal-text">
+        Prima di aggiungere il disco è consigliabile spegnere completamente la VM.
+        Aprire Oracle VM VirtualBox Manager, selezionare la VM e aprire
+        "Impostazioni" → "Archiviazione". Nel controller appropriato, ad esempio
+        il controller SATA, selezionare "Aggiungi disco rigido" → "Scegli un disco
+        esistente" e selezionare il file .vdi. Confermare con "OK".
+    </div>
+
+    <br>
+    <div class="bold-text">Cartelle condivise con Windows</div>
+
+    <div class="normal-text">
+        Prima di utilizzare le cartelle condivise è necessario che le Guest Additions
+        siano installate nel sistema guest.
+        <br><br>
+        Nelle impostazioni della VM aprire "Cartelle condivise" → "Aggiungi nuova".
+        Impostare:
+        <br>
+        - Percorso della cartella: percorso della cartella sull'host, ad esempio C:\folder
+        <br>
+        - Nome della cartella: nome della condivisione, ad esempio folder
+        <br>
+        - Selezionare "Montaggio automatico" se si desidera il montaggio automatico.
+        <br><br>
+        La cartella condivisa può essere raggiunta dal guest Windows tramite
+        la condivisione VirtualBox.
+    </div>
+
+
+    <br>
+    <div class="bold-text">Cartelle condivise con Linux</div>
+
+    <div class="normal-text">
+        Nelle impostazioni della VM aprire "Cartelle condivise" → "Aggiungi nuova".
+        Impostare il percorso della cartella sull'host e un nome per la condivisione,
+        ad esempio folder.
+        <br><br>
+        Se viene selezionato il montaggio automatico, VirtualBox può montare la
+        condivisione in un percorso sotto /media, ad esempio /media/sf_folder.
+        Il percorso esatto può variare in base alla distribuzione e alla configurazione.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample12">df -h</div>
+        <button onclick="CopyCommand('sample12')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Se la cartella non viene montata automaticamente, creare un punto di mount
+        e montare la condivisione utilizzando il nome assegnato nelle impostazioni
+        di VirtualBox.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample13">sudo mkdir -p /home/user/shared</div>
+        <button onclick="CopyCommand('sample13')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample14">sudo mount -t vboxsf folder /home/user/shared</div>
+        <button onclick="CopyCommand('sample14')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Per consentire all'utente corrente di accedere alle cartelle condivise senza
+        dover utilizzare ogni volta privilegi amministrativi, aggiungerlo al gruppo
+        vboxsf. Dopo l'operazione effettuare il logout/login oppure riavviare il sistema.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample15">sudo usermod -aG vboxsf $USER</div>
+        <button onclick="CopyCommand('sample15')">Copy</button>
+    </div>
+
+    <br>
+    <div class="bold-text">Creazione di una cartella condivisa con PowerShell</div>
+
+    <div class="normal-text">
+        È possibile configurare una cartella condivisa direttamente tramite VBoxManage.
+        Eseguire PowerShell come amministratore e utilizzare il percorso di VBoxManage.exe.
+        Sostituire NomeVM, cartella e C:\path\cartella con i valori reali.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample16">cd "C:\Program Files\Oracle\VirtualBox"</div>
+        <button onclick="CopyCommand('sample16')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample17">.\VBoxManage.exe sharedfolder add "NomeVM" --name "cartella" --hostpath "C:\path\cartella" --automount --auto-mount-point "/mnt/path/cartella"</div>
+        <button onclick="CopyCommand('sample17')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Il parametro --automount abilita il montaggio automatico della condivisione.
+        Il parametro --auto-mount-point consente di specificare il punto di mount
+        nel guest quando supportato dalla configurazione del sistema.
+    </div>
+
+
+    <br>
+    <div class="bold-text">Configurazione dell'avvio automatico delle VM su Windows</div>
+
+    <div class="normal-text">
+        Identificare la directory in cui sono memorizzate le macchine virtuali,
+        ad esempio D:\VirtualMachines, e il nome esatto della VM, ad esempio
+        "My_VM".
+        <br><br>
+        Successivamente aprire Utilità di pianificazione di Windows, creare una nuova
+        cartella e al suo interno creare una nuova attività.
+    </div>
+
+    <div class="normal-text">
+        Nella scheda "Generale" configurare l'attività in modo che possa essere
+        eseguita anche quando l'utente non ha effettuato l'accesso e con privilegi
+        elevati, secondo le necessità dell'ambiente.
+    </div>
+
+    <div class="normal-text">
+        Nella scheda "Attivazione" creare un trigger "All'avvio" per eseguire
+        l'attività quando viene avviato il sistema host.
+    </div>
+
+    <div class="normal-text">
+        Nella scheda "Azioni" selezionare "Avvio programma".
+        Impostare VBoxManage.exe come programma e specificare il nome della VM
+        con l'opzione startvm. L'opzione --type headless avvia la macchina virtuale
+        senza aprire una finestra dell'interfaccia grafica.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample18">C:\Program Files\Oracle\VirtualBox\VBoxManage.exe</div>
+        <button onclick="CopyCommand('sample18')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample19">startvm "My_VM" --type headless</div>
+        <button onclick="CopyCommand('sample19')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Nel campo "Inizia in" impostare la directory di installazione di VirtualBox.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample20">C:\Program Files\Oracle\VirtualBox</div>
+        <button onclick="CopyCommand('sample20')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Nella scheda "Condizioni" disabilitare le condizioni non necessarie
+        all'avvio della VM, in particolare quelle relative all'alimentazione
+        e all'alimentazione da rete, se non pertinenti al server.
+    </div>
+
+    <div class="normal-text">
+        Nella scheda "Impostazioni" abilitare "Consenti esecuzione attività su richiesta".
+        Se necessario, configurare il riavvio automatico dell'attività in caso di errore,
+        ad esempio ogni 5 minuti, limitando il numero di tentativi a 3.
+        È inoltre possibile impostare un limite massimo di esecuzione di 3 giorni
+        e selezionare "Non avviare una nuova istanza" se l'attività è già in esecuzione.
+    </div>
+
+
+    <br>
+    <div class="bold-text">Abilitazione di VBoxSVC nella Session 0 di Windows</div>
+
+    <div class="normal-text">
+        Questa configurazione è utile in scenari in cui le VM headless devono continuare
+        a funzionare anche dopo il logout dell'utente. La funzionalità è disabilitata
+        per impostazione predefinita e la documentazione Oracle la indica come
+        sperimentale.
+        <br>
+        Chiudere VirtualBox e arrestare tutte le VM prima di modificare il registro.
+        Creare la chiave:
+        <br>
+        HKEY_LOCAL_MACHINE\Software\Oracle\VirtualBox\VBoxSDS
+        <br>
+        All'interno creare un valore DWORD (32 bit) denominato ServerSession0
+        e impostarlo a 1.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample21">New-Item -Path "HKLM:\Software\Oracle\VirtualBox\VBoxSDS" -Force</div>
+        <button onclick="CopyCommand('sample21')">Copy</button>
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample22">New-ItemProperty -Path "HKLM:\Software\Oracle\VirtualBox\VBoxSDS" -Name "ServerSession0" -PropertyType DWord -Value 1 -Force</div>
+        <button onclick="CopyCommand('sample22')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Riavviare il sistema host affinché la modifica abbia effetto.
+    </div>
+
+    <div class="normal-text">
+        Dopo il riavvio è possibile verificare il valore configurato tramite PowerShell.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample23">Get-ItemProperty "HKLM:\Software\Oracle\VirtualBox\VBoxSDS" -Name ServerSession0 -ErrorAction SilentlyContinue</div>
+        <button onclick="CopyCommand('sample23')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">Verifica delle macchine virtuali disponibili</div>
+
+    <div class="normal-text">
+       Visualizzare le VM presenti su VirtualBox con PowerShell
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample24">& "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" list vms</div>
+        <button onclick="CopyCommand('sample24')">Copy</button>
+    </div>
+
+	<script>	
+		function CopyCommand(sampleId) {
+			const textToCopy = document.getElementById(sampleId).innerText;
+			navigator.clipboard.writeText(textToCopy).then(function () {			
+			}).catch(function (err) {
+			});
+		}
+    </script>
+
+</body>
+</html>
