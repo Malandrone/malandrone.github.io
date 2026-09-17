@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">Linux Server Management</h1>
+
+    <br>
+    <div class="bold-text">1. Aprire un file con vi</div>
+
+    <div class="normal-text">
+        Per aprire o creare un file utilizzando <b>vi</b>, specificare il percorso del file come argomento.
+        Se il file non esiste, vi lo creerà quando verrà salvato.
+        <br><br>
+        Se il file richiede privilegi di amministratore, è possibile utilizzare <b>sudo</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">sudo vi &lt;path_del_file&gt;</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">2. Modalità di funzionamento di vi</div>
+
+    <div class="normal-text">
+        <b>vi</b> utilizza diverse modalità operative.
+        La modalità principale è quella di comando, nella quale i tasti premuti vengono interpretati come comandi.
+        Per modificare il contenuto del file è necessario entrare nella modalità di inserimento.
+        <br><br>
+        Dopo aver aperto un file, normalmente ci si trova in <b>modalità comando</b>.
+        Per eseguire un'operazione di scrittura è quindi necessario passare alla modalità inserimento.
+    </div>
+
+
+    <br>
+    <div class="bold-text">3. Entrare nella modalità inserimento</div>
+
+    <div class="normal-text">
+        Premere <b>i</b> per entrare nella modalità di inserimento (<i>Insert</i>).
+        Da questo momento è possibile digitare e modificare normalmente il testo del file.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">i</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">4. Uscire dalla modalità inserimento</div>
+
+    <div class="normal-text">
+        Premere <b>Esc</b> per uscire dalla modalità inserimento e tornare alla modalità comando.
+        Questo passaggio è necessario prima di eseguire comandi come il salvataggio o la chiusura del file.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">Esc</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">5. Salvare il file</div>
+
+    <div class="normal-text">
+        Dopo essere tornati in modalità comando, digitare <b>:w</b> e premere <b>Invio</b>.
+        Il comando <b>w</b> significa <i>write</i> e salva le modifiche senza chiudere vi.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">:w</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">6. Salvare e chiudere vi</div>
+
+    <div class="normal-text">
+        Per salvare le modifiche e chiudere contemporaneamente vi, premere <b>Esc</b>, digitare <b>:wq</b> e premere <b>Invio</b>.
+        <br><br>
+        <b>w</b> salva il file, mentre <b>q</b> (<i>quit</i>) chiude l'editor.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">:wq</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">7. Uscire senza salvare</div>
+
+    <div class="normal-text">
+        Per annullare tutte le modifiche effettuate dall'ultimo salvataggio e chiudere vi,
+        premere <b>Esc</b>, digitare <b>:q!</b> e premere <b>Invio</b>.
+        <br><br>
+        Il carattere <b>!</b> forza l'uscita anche quando sono presenti modifiche non salvate.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">:q!</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">8. Uscire da vi</div>
+
+    <div class="normal-text">
+        Se il file non presenta modifiche non salvate, è possibile chiudere vi semplicemente con <b>:q</b>.
+        Premere prima <b>Esc</b>, digitare il comando e premere <b>Invio</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">:q</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">9. Annullare l'ultima modifica</div>
+
+    <div class="normal-text">
+        In modalità comando, premere <b>u</b> per annullare l'ultima modifica effettuata.
+        È possibile premere più volte <b>u</b> per annullare progressivamente più modifiche.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">u</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">10. Cercare del testo</div>
+
+    <div class="normal-text">
+        Per cercare una parola o una stringa all'interno del file, premere <b>Esc</b>,
+        digitare <b>/testo</b> e premere <b>Invio</b>.
+        <br><br>
+        Dopo aver effettuato la ricerca, premere <b>n</b> per passare alla corrispondenza successiva.
+        Premere <b>N</b> per tornare alla corrispondenza precedente.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">/testo</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">11. Passare alla riga specificata</div>
+
+    <div class="normal-text">
+        In modalità comando è possibile spostarsi direttamente a una determinata riga utilizzando
+        <b>:numero_riga</b>.
+        Ad esempio, <b>:25</b> porta il cursore alla riga 25.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample10">:25</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">12. Visualizzare i numeri di riga</div>
+
+    <div class="normal-text">
+        Per visualizzare i numeri delle righe all'interno di vi, utilizzare il comando <b>:set number</b>.
+        I numeri sono particolarmente utili quando si lavora con file di configurazione o quando si deve individuare rapidamente una determinata riga.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample11">:set number</div>
+        <button onclick="CopyCommand('sample11')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">13. Rimuovere la visualizzazione dei numeri di riga</div>
+
+    <div class="normal-text">
+        Per nascondere nuovamente i numeri di riga, utilizzare <b>:set nonumber</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample12">:set nonumber</div>
+        <button onclick="CopyCommand('sample12')">Copy</button>
+    </div>
+
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
