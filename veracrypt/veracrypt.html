@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">VeraCrypt Management</h1>
+
+    <br>
+    <div class="bold-text">1. Aprire la directory di installazione di VeraCrypt</div>
+
+    <div class="normal-text">
+        Aprire il <b>Prompt dei comandi</b> o <b>PowerShell</b> e spostarsi nella directory
+        in cui è installato VeraCrypt.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">cd "C:\Program Files\VeraCrypt"</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">2. Montare un volume VeraCrypt da riga di comando</div>
+
+    <div class="normal-text">
+        Utilizzare il comando <b>veracrypt</b> per montare un volume cifrato.
+        <br><br>
+        Il parametro <b>/v</b> specifica il volume da montare.
+        <b>/l</b> indica la lettera dell'unità Windows da assegnare al volume.
+        <b>/a</b> indica l'azione di mount del volume.
+        <b>/p</b> specifica la password utilizzata per la decifratura.
+        Infine, <b>/q</b> esegue VeraCrypt in modalità silenziosa, senza mostrare l'interfaccia grafica.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">.\veracrypt /v &lt;volume&gt; /l &lt;lettera&gt; /a /p &lt;password&gt; /q</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">3. Esempio di montaggio di un container VeraCrypt</div>
+
+    <div class="normal-text">
+        Nell'esempio seguente viene montato il container <b>E:\volume.vc</b> utilizzando la lettera
+        <b>J:</b> come unità di destinazione.
+        <br><br>
+        La password indicata nell'esempio è <b>password</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">.\veracrypt /v E:\volume.vc /l J /a /p password /q</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">4. Specificare il volume da montare</div>
+
+    <div class="normal-text">
+        Il parametro <b>/v</b> (<i>volume</i>) identifica il volume VeraCrypt che deve essere montato.
+        <br><br>
+        Nel caso di un normale container VeraCrypt, è possibile specificare il percorso del file,
+        ad esempio <b>E:\volume.vc</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">/v E:\volume.vc</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">5. Specificare la lettera dell'unità</div>
+
+    <div class="normal-text">
+        Il parametro <b>/l</b> specifica la lettera dell'unità Windows sulla quale verrà montato il volume.
+        <br><br>
+        Nell'esempio il volume sarà disponibile come unità <b>J:</b>.
+        È necessario scegliere una lettera che non sia già utilizzata da un'altra unità.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">/l J</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">6. Montare il volume</div>
+
+    <div class="normal-text">
+        Il parametro <b>/a</b> indica a VeraCrypt di eseguire l'operazione di mount.
+        Il volume cifrato verrà quindi associato alla lettera specificata con il parametro <b>/l</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">/a</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">7. Specificare la password</div>
+
+    <div class="normal-text">
+        Il parametro <b>/p</b> permette di specificare la password del volume VeraCrypt.
+        <br><br>
+        Nell'esempio viene utilizzata la password <b>password</b>.
+
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">/p password</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">8. Utilizzare VeraCrypt in modalità silenziosa</div>
+
+    <div class="normal-text">
+        Il parametro <b>/q</b> permette di eseguire l'operazione senza mostrare la normale interfaccia grafica di VeraCrypt.
+        È particolarmente utile quando il comando viene utilizzato all'interno di script o procedure automatizzate.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">/q</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">9. Montare un'unità o una partizione interamente cifrata</div>
+
+    <div class="normal-text">
+        Se non si sta utilizzando un container VeraCrypt sotto forma di file, ma un'intera unità
+        o una partizione cifrata, nel parametro <b>/v</b> non deve essere indicato il percorso di un file.
+        <br><br>
+        È necessario utilizzare il percorso del dispositivo riportato da VeraCrypt nella sezione
+        <b>Seleziona unità</b>.
+        <br><br>
+        Ad esempio, VeraCrypt potrebbe indicare un dispositivo con il seguente percorso:
+        <b>\Device\Harddisk4\Partition2</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">/v \Device\Harddisk4\Partition2</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">10. Montare un'unità interamente cifrata</div>
+
+    <div class="normal-text">
+        È possibile utilizzare lo stesso procedimento del container VeraCrypt, sostituendo il percorso
+        del file con il percorso del dispositivo fornito da VeraCrypt.
+        <br><br>
+        Nell'esempio l'unità cifrata verrà montata come <b>J:</b>.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample10">.\veracrypt /v \Device\Harddisk4\Partition2 /l J /a /p password /q</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">11. Verificare l'unità montata</div>
+
+    <div class="normal-text">
+        Dopo aver eseguito il comando, verificare in Esplora file di Windows che l'unità indicata
+        con <b>/l</b> sia stata montata correttamente.
+        <br><br>
+        Nell'esempio precedente il volume dovrebbe essere disponibile come <b>J:</b>.
+    </div>
+
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
