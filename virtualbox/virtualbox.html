@@ -342,6 +342,60 @@
         <button onclick="CopyCommand('sample24')">Copy</button>
     </div>
 
+	<br>
+
+    <div class="bold-text">Montare due dischi VDI su una macchina virtuale tramite CMD</div>
+
+    <div class="normal-text">
+        Aprire il Prompt dei comandi di Windows come amministratore e spostarsi nella directory di installazione di VirtualBox.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample25">cd "C:\Program Files\Oracle\VirtualBox"</div>
+        <button onclick="CopyCommand('sample25')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Creare un disco virtuale VD1.vdi, in questo caso sarà collocato sull'unità D:\
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample26">VBoxManage createmedium disk --filename "D:\VD1.vdi" --size 1887436 --format VDI --variant Standard</div>
+        <button onclick="CopyCommand('sample26')">Copy</button>
+    </div>
+	<div class="normal-text">
+        Il parametro --size indica la capacità del disco in megabyte: il valore 1887436 MB corrisponde a circa 1,8 TB.
+        Il formato utilizzato è VDI e la variante Standard crea un disco allocato dinamicamente, che occupa fisicamente sul disco host solo lo spazio effettivamente utilizzato dalla macchina virtuale.
+    </div>
+
+    <div class="normal-text">
+        Creare un secondo disco virtuale VD2.vdi collocato sull'unità E:\ con le stesse caratteristiche del primo disco.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample27">VBoxManage createmedium disk --filename "E:\VD2.vdi" --size 1887436 --format VDI --variant Standard</div>
+        <button onclick="CopyCommand('sample27')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Collegare VD1.vdi alla macchina virtuale utilizzando il controller SATA.
+        Il disco viene collegato alla porta 1  del controller e viene configurato con il tipo di accesso writethrough.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample28">VBoxManage storageattach "VM_NAME" --storagectl "SATA" --port 1 --device 0 --type hdd --medium "D:\VD1.vdi" --mtype writethrough</div>
+        <button onclick="CopyCommand('sample28')">Copy</button>
+    </div>
+
+    <div class="normal-text">
+        Collegare VD2.vdi alla stessa macchina virtuale utilizzando la porta  2 del controller SATA.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample29">VBoxManage storageattach "VM_NAME" --storagectl "SATA" --port 2 --device 0 --type hdd --medium "E:\VD2.vdi" --mtype writethrough</div>
+        <button onclick="CopyCommand('sample29')">Copy</button>
+    </div>
+		
 	<script>	
 		function CopyCommand(sampleId) {
 			const textToCopy = document.getElementById(sampleId).innerText;
