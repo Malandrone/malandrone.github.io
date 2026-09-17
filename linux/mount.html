@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malandrone Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/58426936?s=60" type="image/png">
+</head>
+
+<body>
+
+    <h1 id="page-title">Linux Server Management</h1>
+
+    <br>
+    <div class="bold-text">1. Aggiornare l'elenco dei pacchetti</div>
+
+    <div class="normal-text">
+        Aggiornare l'elenco dei pacchetti disponibili nei repository configurati sul sistema.
+        È consigliabile eseguire questo comando prima di installare nuovi pacchetti.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample1">sudo apt update</div>
+        <button onclick="CopyCommand('sample1')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">2. Installare cifs-utils</div>
+
+    <div class="normal-text">
+        Installare il pacchetto <b>cifs-utils</b>, che fornisce gli strumenti necessari per montare
+        condivisioni SMB/CIFS su Linux.
+        Questo permette di accedere a una cartella condivisa da un server Windows, Samba o altro dispositivo compatibile SMB.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample2">sudo apt install cifs-utils</div>
+        <button onclick="CopyCommand('sample2')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">3. Creare il file delle credenziali</div>
+
+    <div class="normal-text">
+        Creare il file <b>/etc/smb-cred</b>, nel quale verranno memorizzati username e password
+        utilizzati per autenticarsi alla condivisione SMB.
+        <br><br>
+        Utilizzare <b>nano</b> per creare e modificare il file.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample3">sudo nano /etc/smb-cred</div>
+        <button onclick="CopyCommand('sample3')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">4. Inserire le credenziali</div>
+
+    <div class="normal-text">
+        Inserire nel file le credenziali dell'utente autorizzato ad accedere alla condivisione.
+        <br><br>
+        Sostituire <b>TUO_UTENTE</b> con il nome utente e <b>LA_TUA_PASSWORD</b> con la relativa password.
+        <br><br>
+        Il file deve contenere una voce per riga.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample4">
+		username=TUO_UTENTE<br>
+		password=LA_TUA_PASSWORD<br>
+		</div>
+        <button onclick="CopyCommand('sample4')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">5. Proteggere il file delle credenziali</div>
+
+    <div class="normal-text">
+        Impostare i permessi <b>600</b> sul file delle credenziali.
+        In questo modo solamente <b>root</b> potrà leggere e modificare il file.
+        <br><br>
+        Questo passaggio è particolarmente importante perché il file contiene una password in chiaro.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample5">sudo chmod 600 /etc/smb-cred</div>
+        <button onclick="CopyCommand('sample5')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">6. Creare il punto di mount</div>
+
+    <div class="normal-text">
+        Creare la directory <b>/mnt/smbshare</b>, che verrà utilizzata come punto di mount
+        della condivisione SMB.
+        <br><br>
+        L'opzione <b>-p</b> permette di creare anche le directory genitore eventualmente mancanti.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample6">sudo mkdir -p /mnt/smbshare</div>
+        <button onclick="CopyCommand('sample6')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">7. Modificare il file fstab</div>
+
+    <div class="normal-text">
+        Aprire il file <b>/etc/fstab</b>.
+        Questo file contiene le configurazioni dei filesystem e delle condivisioni che possono
+        essere montati automaticamente dal sistema.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample7">sudo nano /etc/fstab</div>
+        <button onclick="CopyCommand('sample7')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">8. Aggiungere la condivisione SMB a fstab</div>
+
+    <div class="normal-text">
+        Aggiungere al file <b>/etc/fstab</b> la configurazione della condivisione.
+        <br><br>
+        Sostituire <b>SERVER</b> con l'indirizzo IP o il nome del server SMB e <b>SHARE</b>
+        con il nome della condivisione.
+        <br><br>
+        <b>cifs</b> indica il filesystem utilizzato per il collegamento SMB.
+        <b>credentials</b> specifica il file contenente le credenziali.
+        <b>vers=3.0</b> richiede l'utilizzo del protocollo SMB 3.0.
+        <b>_netdev</b> indica che il mount dipende dalla disponibilità della rete.
+        <b>nofail</b> permette al sistema di completare l'avvio anche se la condivisione non è raggiungibile.
+        <b>x-systemd.automount</b> permette a systemd di gestire il mount automaticamente quando viene effettuato l'accesso al punto di mount.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample8">//SERVER/SHARE  /mnt/smbshare  cifs  credentials=/etc/smb-cred,vers=3.0,_netdev,nofail,x-systemd.automount  0  0</div>
+        <button onclick="CopyCommand('sample8')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">9. Ricaricare la configurazione di systemd</div>
+
+    <div class="normal-text">
+        Dopo aver modificato <b>/etc/fstab</b>, ricaricare la configurazione di systemd.
+        Questo permette a systemd di rilevare le modifiche alle unità generate a partire dal file fstab.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample9">sudo systemctl daemon-reload</div>
+        <button onclick="CopyCommand('sample9')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">10. Verificare e montare le condivisioni definite in fstab</div>
+
+    <div class="normal-text">
+        Utilizzare <b>mount -av</b> per leggere le configurazioni presenti in <b>/etc/fstab</b>
+        e tentare di montare le risorse configurate.
+        <br><br>
+        L'opzione <b>-a</b> indica di montare tutti i filesystem configurati in fstab,
+        mentre <b>-v</b> abilita un output più dettagliato delle operazioni eseguite.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample10">sudo mount -av</div>
+        <button onclick="CopyCommand('sample10')">Copy</button>
+    </div>
+
+
+    <br>
+    <div class="bold-text">11. Verificare il contenuto della condivisione</div>
+
+    <div class="normal-text">
+        Visualizzare il contenuto della directory <b>/mnt/smbshare</b>.
+        <br><br>
+        L'opzione <b>-l</b> mostra informazioni dettagliate sui file, mentre <b>-a</b>
+        include anche eventuali file nascosti.
+        <br><br>
+        Se il mount è avvenuto correttamente, verranno visualizzati i file e le directory
+        presenti nella condivisione SMB.
+    </div>
+
+    <div class="container">
+        <div class="sample" id="sample11">ls -la /mnt/smbshare</div>
+        <button onclick="CopyCommand('sample11')">Copy</button>
+    </div>
+
+    <script>
+        function CopyCommand(sampleId) {
+            const textToCopy = document.getElementById(sampleId).innerText;
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+
+</body>
+</html>
