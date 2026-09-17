@@ -14,491 +14,221 @@
     <h1 id="page-title">Linux Server Management</h1>
 
     <br>
-    <div class="bold-text">1. Verificare i dischi disponibili</div>
+    <div class="bold-text">1. Creare l'utente Linux per Samba</div>
 
     <div class="normal-text">
-        Prima di iniziare, verificare quali dischi sono collegati alla macchina Linux.
-        Il comando visualizza nome del dispositivo, dimensione, tipo, filesystem, punti di mount e modello.
-        Nell'esempio i due dischi utilizzati saranno <b>/dev/sdb</b> e <b>/dev/sdc</b>.
-        <br><br>
-        <b>Attenzione:</b> i comandi successivi inizializzeranno completamente questi dispositivi.
-        Assicurarsi quindi che non contengano dati da conservare.
+        Creare un nuovo utente Linux denominato <b>smbuser</b>.
+        Questo utente verrà utilizzato per accedere alla condivisione Samba.
+        Durante l'esecuzione del comando verrà richiesta una password per l'utente.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample1">lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL</div>
+        <div class="sample" id="sample1">sudo adduser smbuser</div>
         <button onclick="CopyCommand('sample1')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">2. Inizializzare i dischi come Physical Volume LVM</div>
+    <div class="bold-text">2. Aggiungere l'utente al database degli utenti Samba</div>
 
     <div class="normal-text">
-        <b>pvcreate</b> inizializza i due dischi come <i>Physical Volume</i> (PV) di LVM.
-        I dispositivi <b>/dev/sdb</b> e <b>/dev/sdc</b> verranno quindi utilizzati da LVM per costruire un unico spazio di archiviazione.
+        Aggiungere <b>smbuser</b> al database degli utenti di Samba.
+        La password Samba può essere diversa dalla password dell'account Linux.
+        Durante l'esecuzione verrà richiesta la password che verrà utilizzata per l'accesso alla condivisione.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample2">sudo pvcreate /dev/sdb /dev/sdc</div>
+        <div class="sample" id="sample2">sudo smbpasswd -a smbuser</div>
         <button onclick="CopyCommand('sample2')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">3. Verificare i Physical Volume</div>
+    <div class="bold-text">3. Abilitare l'utente Samba</div>
 
     <div class="normal-text">
-        <b>pvs</b> mostra i Physical Volume presenti nel sistema e permette di verificare che entrambi i dischi siano stati correttamente inizializzati.
+        Abilitare l'account Samba appena creato.
+        Il comando permette all'utente <b>smbuser</b> di autenticarsi al server Samba.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample3">sudo pvs</div>
+        <div class="sample" id="sample3">sudo smbpasswd -e smbuser</div>
         <button onclick="CopyCommand('sample3')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">4. Creare il Volume Group</div>
+    <div class="bold-text">4. Assegnare la proprietà della directory</div>
 
     <div class="normal-text">
-        Creare un <b>Volume Group (VG)</b> denominato <b>vgstorage</b>, utilizzando entrambi i Physical Volume.
-        Il Volume Group rappresenterà quindi il pool di spazio composto dai due dischi.
+        Assegnare la proprietà della directory <b>/srv/storage</b> all'utente e al gruppo <b>smbuser</b>.
+        In questo modo l'utente utilizzato per accedere alla condivisione Samba sarà anche il proprietario della directory.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample4">sudo vgcreate vgstorage /dev/sdb /dev/sdc</div>
+        <div class="sample" id="sample4">sudo chown smbuser:smbuser /srv/storage</div>
         <button onclick="CopyCommand('sample4')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">5. Verificare il Volume Group</div>
+    <div class="bold-text">5. Impostare i permessi della directory</div>
 
     <div class="normal-text">
-        Il comando <b>vgs</b> mostra i Volume Group presenti nel sistema, insieme alla loro dimensione e allo spazio libero disponibile.
+        Impostare i permessi <b>770</b> sulla directory.
+        Il proprietario e il gruppo avranno permessi completi di lettura, scrittura ed esecuzione,
+        mentre gli altri utenti non avranno accesso alla directory.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample5">sudo vgs</div>
+        <div class="sample" id="sample5">sudo chmod 770 /srv/storage</div>
         <button onclick="CopyCommand('sample5')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">6. Creare il Logical Volume</div>
+    <div class="bold-text">6. Verificare proprietà e permessi</div>
 
     <div class="normal-text">
-        Creare un <b>Logical Volume (LV)</b> chiamato <b>storage</b> all'interno del Volume Group <b>vgstorage</b>.
-        L'opzione <b>-l 100%FREE</b> assegna al Logical Volume tutto lo spazio libero disponibile nel Volume Group.
+        Verificare proprietario, gruppo e permessi della directory <b>/srv/storage</b>.
+        L'opzione <b>-d</b> permette di visualizzare le informazioni relative alla directory stessa invece del suo contenuto.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample6">sudo lvcreate -l 100%FREE -n storage vgstorage</div>
+        <div class="sample" id="sample6">ls -ld /srv/storage</div>
         <button onclick="CopyCommand('sample6')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">7. Verificare il Logical Volume</div>
+    <div class="bold-text">7. Creare un backup della configurazione di Samba</div>
 
     <div class="normal-text">
-        Il comando <b>lvs</b> permette di verificare che il Logical Volume <b>storage</b> sia stato creato correttamente.
-        Il dispositivo risultante sarà normalmente disponibile come <b>/dev/vgstorage/storage</b>.
+        Prima di modificare la configurazione di Samba, creare una copia di sicurezza del file <b>smb.conf</b>.
+        In caso di errore sarà così possibile ripristinare rapidamente la configurazione originale.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample7">sudo lvs</div>
+        <div class="sample" id="sample7">sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.bak</div>
         <button onclick="CopyCommand('sample7')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">8. Creare la directory per la chiave LUKS</div>
+    <div class="bold-text">8. Modificare la configurazione di Samba</div>
 
     <div class="normal-text">
-        Creare la directory <b>/root/.luks</b>, che verrà utilizzata per conservare la chiave di cifratura.
-        L'opzione <b>-m 0700</b> assegna alla directory permessi che consentono l'accesso esclusivamente a root.
+        Aprire il file di configurazione principale di Samba utilizzando <b>nano</b>.
+        La configurazione della nuova condivisione verrà aggiunta alla fine del file.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample8">sudo install -d -m 0700 /root/.luks</div>
+        <div class="sample" id="sample8">sudo nano /etc/samba/smb.conf</div>
         <button onclick="CopyCommand('sample8')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">9. Generare una chiave casuale per LUKS</div>
+    <div class="bold-text">9. Configurare la condivisione storage</div>
 
     <div class="normal-text">
-        Generare una chiave casuale utilizzando <b>/dev/urandom</b>.
-        La chiave viene salvata nel file <b>/root/.luks/storage.key</b>.
-        L'opzione <b>bs=4096 count=1</b> genera un file di 4096 byte.
+        Aggiungere in fondo al file <b>/etc/samba/smb.conf</b> il seguente blocco.
         <br><br>
-        Il parametro <b>status=none</b> evita di visualizzare informazioni aggiuntive prodotte da <b>dd</b>.
+        <b>[storage]</b> definisce il nome della condivisione.
+        <b>path</b> indica la directory Linux condivisa.
+        <b>browseable = yes</b> permette alla condivisione di essere visualizzata durante la navigazione delle risorse di rete.
+        <b>read only = no</b> abilita la scrittura.
+        <b>guest ok = no</b> impedisce l'accesso anonimo.
+        <b>valid users</b> limita l'accesso all'utente <b>smbuser</b>.
+        <b>force user</b> fa sì che le operazioni sui file vengano eseguite come <b>smbuser</b>.
+        <b>create mask</b> e <b>directory mask</b> definiscono i permessi massimi per file e directory creati tramite Samba.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample9">sudo dd if=/dev/urandom of=/root/.luks/storage.key bs=4096 count=1 status=none</div>
+        <div class="sample" id="sample9">[storage]
+   path = /srv/storage<br>
+   browseable = yes<br>
+   read only = no<br>
+   guest ok = no<br>
+   valid users = smbuser<br>
+   force user = smbuser<br>
+   create mask = 0660<br>
+   directory mask = 0770</div>
         <button onclick="CopyCommand('sample9')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">10. Proteggere la chiave di cifratura</div>
+    <div class="bold-text">10. Verificare la configurazione di Samba</div>
 
     <div class="normal-text">
-        Impostare i permessi del file della chiave a <b>0400</b>.
-        In questo modo il file può essere letto solamente da root e non può essere modificato dagli altri utenti.
+        Prima di riavviare Samba, verificare la sintassi del file di configurazione.
+        <b>testparm</b> analizza <b>smb.conf</b> e segnala eventuali errori di configurazione.
+        È consigliabile eseguire sempre questo controllo dopo aver modificato il file.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample10">sudo chmod 0400 /root/.luks/storage.key</div>
+        <div class="sample" id="sample10">sudo testparm</div>
         <button onclick="CopyCommand('sample10')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">11. Inizializzare il volume con LUKS2</div>
+    <div class="bold-text">11. Riavviare il servizio Samba</div>
 
     <div class="normal-text">
-        Formattare il Logical Volume con <b>LUKS2</b>, creando il contenitore cifrato.
-        Il dispositivo utilizzato è <b>/dev/vgstorage/storage</b> e la chiave precedentemente generata viene specificata tramite <b>--key-file</b>.
-        <br><br>
-        <b>Attenzione:</b> questa operazione inizializza il dispositivo e rende inutilizzabili eventuali dati precedentemente presenti.
+        Riavviare il servizio <b>smbd</b> per applicare la nuova configurazione.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample11">sudo cryptsetup luksFormat --type luks2 /dev/vgstorage/storage /root/.luks/storage.key</div>
+        <div class="sample" id="sample11">sudo systemctl restart smbd</div>
         <button onclick="CopyCommand('sample11')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">12. Verificare la configurazione LUKS</div>
+    <div class="bold-text">12. Verificare lo stato del servizio</div>
 
     <div class="normal-text">
-        Visualizzare le informazioni contenute nell'header LUKS.
-        Il comando <b>head -30</b> limita l'output alle prime 30 righe, sufficienti per una verifica iniziale.
+        Controllare che il servizio Samba sia correttamente in esecuzione.
+        L'opzione <b>--no-pager</b> impedisce a <b>systemctl</b> di aprire il risultato all'interno del pager,
+        mostrando direttamente l'output nel terminale.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample12">sudo cryptsetup luksDump /dev/vgstorage/storage | head -30</div>
+        <div class="sample" id="sample12">sudo systemctl status smbd --no-pager</div>
         <button onclick="CopyCommand('sample12')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">13. Aprire il volume cifrato</div>
+    <div class="bold-text">13. Abilitare l'avvio automatico di Samba</div>
 
     <div class="normal-text">
-        Aprire il volume LUKS e associarlo al nome <b>storage_crypt</b>.
-        Dopo questa operazione sarà disponibile il dispositivo virtuale <b>/dev/mapper/storage_crypt</b>.
-        La chiave viene fornita tramite il file precedentemente creato.
+        Abilitare il servizio <b>smbd</b> all'avvio del sistema.
+        In questo modo Samba verrà avviato automaticamente dopo ogni riavvio del server.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample13">sudo cryptsetup open /dev/vgstorage/storage storage_crypt --key-file /root/.luks/storage.key</div>
+        <div class="sample" id="sample13">sudo systemctl enable smbd</div>
         <button onclick="CopyCommand('sample13')">Copy</button>
     </div>
 
 
     <br>
-    <div class="bold-text">14. Verificare la struttura dei dispositivi</div>
+    <div class="bold-text">14. Accedere alla condivisione dal client</div>
 
     <div class="normal-text">
-        Verificare la struttura dei dispositivi a blocchi.
-        Il comando permette di vedere la relazione tra i dischi fisici, LVM, il volume LUKS e il dispositivo mapper.
+        Una volta completata la configurazione, la condivisione <b>storage</b> sarà raggiungibile dalla rete tramite il percorso UNC:
+        <b>\\IP_DEL_SERVER\storage</b>.
+        <br><br>
+        Sostituire <b>IP_DEL_SERVER</b> con l'indirizzo IP della macchina Linux.
+        Quando richiesto, utilizzare le credenziali dell'utente Samba <b>smbuser</b>.
     </div>
 
     <div class="container">
-        <div class="sample" id="sample14">lsblk</div>
+        <div class="sample" id="sample14">\\IP_DEL_SERVER\storage</div>
         <button onclick="CopyCommand('sample14')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">15. Creare il filesystem EXT4</div>
-
-    <div class="normal-text">
-        Creare un filesystem <b>ext4</b> sul dispositivo cifrato.
-        L'opzione <b>-L STORAGE</b> assegna al filesystem l'etichetta <b>STORAGE</b>.
-        <br><br>
-        Il filesystem viene creato sul dispositivo <b>/dev/mapper/storage_crypt</b>, cioè all'interno del volume LUKS già aperto.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample15">sudo mkfs.ext4 -L STORAGE /dev/mapper/storage_crypt</div>
-        <button onclick="CopyCommand('sample15')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">16. Creare il punto di mount</div>
-
-    <div class="normal-text">
-        Creare la directory <b>/srv/storage</b>, che verrà utilizzata come punto di mount del filesystem.
-        L'opzione <b>-p</b> permette di creare anche le eventuali directory genitore mancanti.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample16">sudo mkdir -p /srv/storage</div>
-        <button onclick="CopyCommand('sample16')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">17. Montare il filesystem</div>
-
-    <div class="normal-text">
-        Montare il filesystem ext4 sul percorso <b>/srv/storage</b>.
-        Da questo momento il contenuto del volume sarà accessibile attraverso questa directory.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample17">sudo mount /dev/mapper/storage_crypt /srv/storage</div>
-        <button onclick="CopyCommand('sample17')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">18. Verificare lo spazio disponibile</div>
-
-    <div class="normal-text">
-        Controllare lo spazio disponibile sul filesystem montato.
-        L'opzione <b>-h</b> visualizza le dimensioni in un formato leggibile dall'utente, ad esempio GB o TB.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample18">df -h /srv/storage</div>
-        <button onclick="CopyCommand('sample18')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">19. Recuperare l'UUID del volume LUKS</div>
-
-    <div class="normal-text">
-        Recuperare l'UUID univoco dell'header LUKS.
-        Questo valore verrà utilizzato nel file <b>/etc/crypttab</b> per indicare al sistema quale volume deve essere aperto automaticamente.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample19">sudo cryptsetup luksUUID /dev/vgstorage/storage</div>
-        <button onclick="CopyCommand('sample19')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">20. Configurare l'apertura automatica del volume LUKS</div>
-
-    <div class="normal-text">
-        Aprire il file <b>/etc/crypttab</b> con l'editor nano.
-        Questo file contiene le configurazioni utilizzate dal sistema per gestire i dispositivi cifrati durante l'avvio.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample20">sudo nano /etc/crypttab</div>
-        <button onclick="CopyCommand('sample20')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">21. Aggiungere il volume a crypttab</div>
-
-    <div class="normal-text">
-        Aggiungere al file <b>/etc/crypttab</b> una riga contenente il nome del mapping, l'UUID del volume LUKS e il percorso della chiave.
-        <br><br>
-        Sostituire <b>IL-TUO-UUID</b> con l'UUID ottenuto dal comando precedente.
-        L'opzione <b>luks</b> indica che il dispositivo utilizza LUKS.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample21">storage_crypt UUID=IL-TUO-UUID /root/.luks/storage.key luks</div>
-        <button onclick="CopyCommand('sample21')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">22. Verificare l'UUID del filesystem</div>
-
-    <div class="normal-text">
-        Utilizzare <b>blkid</b> per visualizzare le informazioni identificative del dispositivo contenente il filesystem ext4.
-        Questo consente di verificare che il filesystem sia stato creato correttamente.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample22">sudo blkid /dev/mapper/storage_crypt</div>
-        <button onclick="CopyCommand('sample22')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">23. Configurare il mount automatico</div>
-
-    <div class="normal-text">
-        Aprire il file <b>/etc/fstab</b>, che contiene le configurazioni dei filesystem da montare automaticamente.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample23">sudo nano /etc/fstab</div>
-        <button onclick="CopyCommand('sample23')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">24. Aggiungere il filesystem a fstab</div>
-
-    <div class="normal-text">
-        Aggiungere la seguente riga a <b>/etc/fstab</b>.
-        Il filesystem <b>/dev/mapper/storage_crypt</b> verrà montato automaticamente in <b>/srv/storage</b>.
-        <br><br>
-        L'opzione <b>nofail</b> permette al sistema di proseguire l'avvio anche se il filesystem non è disponibile.
-        Il valore <b>0</b> disabilita il dump e <b>2</b> indica la priorità del controllo del filesystem durante il boot.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample24">/dev/mapper/storage_crypt /srv/storage ext4 defaults,nofail 0 2</div>
-        <button onclick="CopyCommand('sample24')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">25. Aggiungere una passphrase alla chiave LUKS</div>
-
-    <div class="normal-text">
-        Aggiungere una nuova passphrase al volume LUKS utilizzando la chiave esistente come credenziale di autorizzazione.
-        Quando richiesto, inserire la nuova password che verrà memorizzata in un nuovo slot della chiave LUKS.
-        <br><br>
-        In questo modo il volume potrà essere aperto sia utilizzando il file di chiave sia utilizzando la passphrase.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample25">sudo cryptsetup luksAddKey --key-file /root/.luks/storage.key /dev/vgstorage/storage</div>
-        <button onclick="CopyCommand('sample25')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">26. Aggiornare l'initramfs</div>
-
-    <div class="normal-text">
-        Aggiornare l'<b>initramfs</b> per rendere disponibili all'avvio le configurazioni e i componenti necessari alla gestione del volume cifrato.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample26">sudo update-initramfs -u</div>
-        <button onclick="CopyCommand('sample26')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">27. Ricaricare la configurazione di systemd</div>
-
-    <div class="normal-text">
-        Ricaricare la configurazione di <b>systemd</b> per fare in modo che il sistema riconosca eventuali modifiche alle configurazioni dei servizi e delle unità.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample27">sudo systemctl daemon-reload</div>
-        <button onclick="CopyCommand('sample27')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">28. Verificare lo stato del servizio Samba</div>
-
-    <div class="normal-text">
-        Se il filesystem verrà utilizzato per una condivisione Samba, verificare lo stato del servizio <b>smbd</b>.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample28">sudo systemctl status smbd</div>
-        <button onclick="CopyCommand('sample28')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">29. Assegnare la proprietà della directory a un utente</div>
-
-    <div class="normal-text">
-        Assegnare ricorsivamente la proprietà della directory <b>/srv/storage</b> all'utente e al gruppo <b>smbuser</b>.
-        L'opzione <b>-R</b> applica la modifica anche a tutti i file e alle sottodirectory presenti.
-        <br><br>
-        Assicurarsi che l'utente <b>smbuser</b> esista realmente sul sistema prima di eseguire il comando.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample29">sudo chown -R smbuser:smbuser /srv/storage</div>
-        <button onclick="CopyCommand('sample29')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">30. Smontare il filesystem per il test finale</div>
-
-    <div class="normal-text">
-        Smontare temporaneamente il filesystem per verificare che la sequenza di apertura e mount funzioni correttamente.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample30">sudo umount /srv/storage</div>
-        <button onclick="CopyCommand('sample30')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">31. Chiudere il volume LUKS</div>
-
-    <div class="normal-text">
-        Chiudere il mapping LUKS <b>storage_crypt</b>.
-        Il dispositivo <b>/dev/mapper/storage_crypt</b> non sarà più disponibile finché il volume cifrato non verrà nuovamente aperto.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample31">sudo cryptsetup close storage_crypt</div>
-        <button onclick="CopyCommand('sample31')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">32. Riaprire il volume LUKS</div>
-
-    <div class="normal-text">
-        Riaprire il volume cifrato utilizzando la chiave salvata in <b>/root/.luks/storage.key</b>.
-        Questo verifica che la chiave sia corretta e che il volume LUKS possa essere nuovamente attivato.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample32">sudo cryptsetup open /dev/vgstorage/storage storage_crypt --key-file /root/.luks/storage.key</div>
-        <button onclick="CopyCommand('sample32')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">33. Rimontare il filesystem</div>
-
-    <div class="normal-text">
-        Dopo aver riaperto il volume LUKS, montare nuovamente il filesystem ext4 sul punto di mount <b>/srv/storage</b>.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample33">sudo mount /dev/mapper/storage_crypt /srv/storage</div>
-        <button onclick="CopyCommand('sample33')">Copy</button>
-    </div>
-
-
-    <br>
-    <div class="bold-text">34. Verificare il filesystem dopo il riavvio del volume</div>
-
-    <div class="normal-text">
-        Controllare nuovamente lo spazio disponibile.
-        Se il comando restituisce correttamente le informazioni del filesystem, il volume LUKS è stato riaperto e il filesystem ext4 è nuovamente montato.
-    </div>
-
-    <div class="container">
-        <div class="sample" id="sample34">df -h /srv/storage</div>
-        <button onclick="CopyCommand('sample34')">Copy</button>
     </div>
 
 
